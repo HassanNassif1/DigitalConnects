@@ -1,0 +1,358 @@
+/* accounting.css */
+
+/* Body and general styles */
+
+
+h1 {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.dark-mode-h1 {
+  color: #fff;
+}
+
+/* Rows and layout */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+.button {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+/* Dark mode container */
+.dark-mode-container {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Search inputs */
+.light-mode-search {
+  height: 37px;
+}
+.glow-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+.glow-box:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+}
+.ant-table-thead > tr > th {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+}
+.ant-table-tbody > tr > td {
+  background: transparent !important;
+  color: white !important;
+}
+.accounting-dashboard {
+  width: 100vw;        /* full viewport width */
+  height: 100vh;       /* full viewport height */
+  margin: 0;           /* remove default margin */
+  padding: 0;          /* remove default padding */
+  background: #0a0f1f; /* optional background */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.accounting-dashboard .ant-table {
+  width: 100% !important;
+}
+
+.accounting-dashboard .ant-table-container {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.accounting-dashboard .ant-table-wrapper {
+  width: 100% !important;
+}
+
+
+.normal-search {
+    background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+  height: 30px; 
+  width: 180px; 
+  padding: 8px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  font-size: 16px; 
+}
+
+.normal-search:focus {
+ 
+  outline: none;
+}
+
+/* Table styles */
+.light-mode-table {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  
+  font-family: Arial, sans-serif;
+}
+
+/* Remove all vertical borders/separators in table */
+.light-mode-table .ant-table-cell,
+.light-mode-table .ant-table-thead > tr > th,
+.light-mode-table .ant-table-tbody > tr > td {
+    border-right: none !important;
+     background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+    border-left: none !important;
+    color:white;
+}
+
+/* Optional: remove vertical borders on table wrapper */
+.light-mode-table .ant-table-container,
+.light-mode-table .ant-table-thead,
+.light-mode-table .ant-table-tbody {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+/* Table header styling */
+.light-mode-table thead th {
+   background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+
+  text-align: left;
+  border-bottom: 2px solid #1f1f1f33;
+}
+
+/* Table rows */
+.light-mode-table tbody tr {
+  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%);
+  transition: all 0.3s ease;
+
+}
+
+.light-mode-table tbody tr:hover {
+  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%);
+  transform: translateX(2px);
+  
+}
+/* Create_Accounting.css */
+
+/* Remove any background from form rows */
+.form-group.row {
+  background: transparent !important;
+  margin-bottom: 15px;
+}
+
+/* Remove background from labels */
+.form-group.row .col-form-label {
+  background: transparent !important;
+  color: #fff;
+}
+
+/* Make sure inputs and selects have their own transparent overlay */
+.form-group.row input,
+.form-group.row select {
+  background: rgba(255, 255, 255, 0.1); /* light transparent overlay */
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  height: 50px;
+}
+
+/* Table cells */
+.light-mode-table tbody td {
+  padding: 12px 8px;
+  font-size: 14px;
+  
+}
+
+/* Alternating row colors */
+.light-mode-table tbody tr:nth-child(even) {
+  background-color: #f8f9fc;
+}
+
+/* Buttons inside table */
+.light-mode-table .ant-btn {
+  margin: 0 4px;
+}
+
+/* Dark mode table header */
+.dark-mode-table-header {
+  background-color: #1c1c1c; 
+}
+
+/* General table cell padding */
+.ant-table-cell {
+  padding: 16px; 
+  font-size: small;
+ background: transparent !important ;
+border: none !important;
+}
+.ant-table-cell:hover {
+  padding: 16px; 
+  font-size: small;
+
+border: none !important;
+}
+
+/* Table header styling */
+.light-mode-table .ant-table-thead > tr > th {
+  background: midnightblue !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+  border: none !important;
+  text-align: left;
+  border-bottom: 2px solid #1f1f1f33;
+  border-right: 0 !important; /* remove vertical line */
+}
+.light-mode-table .ant-table-tbody > tr > td {
+  border-right: 0 !important; /* remove vertical line */
+  padding: 12px 8px;
+  font-size: 14px;
+}
+/* Styled profit card */
+.StyledProfit {
+  
+  font-size: 1.2rem;
+  margin: 1rem 0;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(46, 49, 146, 255) !important;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.StyledProfit:hover {
+  transform: scale(1.05);
+}
+/* Common style for all action buttons */
+.action-btn {
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  transition: all 0.3s ease;
+  color: white !important;
+}
+
+/* Edit button (midnight blue theme) */
+.edit-btn {
+  background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+}
+.edit-btn:hover {
+   background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Delete button (red theme) */
+.delete-btn {
+  background: linear-gradient(145deg, #d32f2f, #b71c1c) !important;
+}
+.delete-btn:hover {
+  background: linear-gradient(145deg, #b71c1c, #7f0000) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* PDF button (primary red tone) */
+.pdf-btn {
+  background: linear-gradient(145deg, #ff5252, #e53935) !important;
+}
+.pdf-btn:hover {
+  background: linear-gradient(145deg, #e53935, #c62828) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Remaining PDF button (blue theme) */
+.remaining-btn {
+  background: linear-gradient(145deg, #1e88e5, #1565c0) !important;
+}
+.remaining-btn:hover {
+  background: linear-gradient(145deg, #1565c0, #0d47a1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Excel button (green theme) */
+.excel-btn {
+  background: linear-gradient(145deg, #43a047, #2e7d32) !important;
+}
+.excel-btn:hover {
+  background: linear-gradient(145deg, #2e7d32, #1b5e20) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Chart container */
+.chart-container {
+  margin: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: scale(1.02);
+}
+
+/* Custom icons */
+.custom-icon {
+  color: rgba(46, 49, 146, 255) !important;
+}
+.custom-btn {
+    background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) !important ;
+  color: white !important;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+/* Target Ant Design DatePicker input placeholder */
+.custom-btn .ant-picker-input > input::placeholder {
+  color: white !important;
+  opacity: 1; /* make sure it's not faded */
+}
+
+/* Also force input text to be white */
+.custom-btn .ant-picker-input > input {
+  color: white !important;
+}
+.custom-btn.ant-picker {
+  background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+  border: none !important;
+  border-radius: 8px !important;
+  color: white !important;
+}
+
+.custom-btn.ant-picker:hover,
+.custom-btn.ant-picker-focused {
+  background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.custom-btn:hover {
+   background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) ;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* List icons */
+ul li i {
+  color: rgba(46, 49, 146, 255);
+}

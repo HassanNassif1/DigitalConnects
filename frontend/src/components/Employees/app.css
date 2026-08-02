@@ -1,0 +1,153 @@
+.admin-sidebarr {
+  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%);
+    color: white;
+    width: 320px; /* Fixed width */
+    height: 100vh; /* Full height */
+    position: fixed; /* Fix to the left side */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    padding: 20px;
+    z-index: 1000; /* Ensure it stays above other content */
+}
+ 
+     body {
+  content: "";
+
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.admin-sidebarr .circle-image {
+    width: 70%;
+    height: 70%;
+    margin-top:-20px;
+    border-radius: 50%;
+}
+
+.admin-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Remove default margin */
+}
+
+.admin-menu li {
+    margin: 15px 0; /* Space between items */
+    position: relative; /* Needed for the dropdown positioning */
+}
+
+.admin-menu li .dropdown-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0 10px 14px 10px;
+    transition: background-color 0.3s;
+    padding: 0 5px 0 5px;
+    font-size: 18px;
+}
+
+.admin-menu li:hover .dropdown-header {
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly lighter on hover */
+    padding: 0 5px 0 5px;
+}
+.sidebar-toggle{
+    background-color: rgba(46, 49, 146, 255);
+}
+.sidebar-toggle:hover{
+    background-color:rgba(60, 63, 177, 0.9); 
+}
+
+
+.admin-sidebarr.collapsed {
+    width: 90px !important; /* Width when closed */
+    overflow: hidden; /* Hide content when collapsed */
+}
+
+.admin-sidebarr.collapsed .admin-menu {
+    display: none; /* Hide menu items when collapsed */
+}
+
+.admin-sidebarr.collapsed .circle-image {
+    display: none; /* Optionally hide the image */
+}
+.admin-sidebarr.collapsed + .sidebar-toggle {
+    left: 60px; /* Adjust button position when sidebar is collapsed */
+}
+
+.dropdown-content {
+    display: none; /* Hide dropdown by default */
+    position: absolute;
+    bottom: -30%; /* Position above the menu item */
+    left: 100%; /* Align to the right */
+    background-color: rgba(60, 63, 177, 0.9); /* Lighter version */
+    min-width: 250px; /* Minimum width for dropdown */
+    z-index: 1001; /* Ensure dropdown is above sidebar content */
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    opacity: 0; /* Initially hidden */
+    transform: translateY(10px); /* Slightly push it down for effect */
+}
+
+
+.admin-menu li:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Move it up to its original position */
+}
+
+.dropdown-content li {
+    padding: 10px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.dropdown-content li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Lighten on hover */
+}
+
+.toggle-dark-mode {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.toggle-dark-mode h2 {
+    cursor: pointer;
+    margin: 0;
+}
+
+.admin-sidebarr a {
+    text-decoration: none;
+    color: white; /* Change link color */
+}
+
+.admin-sidebarr a:hover {
+    color: rgba(255, 255, 255, 0.8); /* Lighter link color on hover */
+}
+.admin-sidebarr {
+    /* Existing styles */
+    transition: width 0.3s ease; /* Transition for width */
+}
+
+.admin-sidebarr.collapsed {
+    width: 60px; /* Width when closed */
+    overflow: hidden; /* Hide content when collapsed */
+    transition: width 0.3s ease; /* Ensure transition is smooth */
+}
+
+.sidebar-toggle {
+    transition: left 0.3s ease; /* Transition for button position */
+}
+
+/* Add transition for content visibility */
+.admin-menu,
+.circle-image {
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Transition for visibility */
+}
+
+.admin-sidebarr.collapsed .admin-menu,
+.admin-sidebarr.collapsed .circle-image {
+    opacity: 0; /* Hide content */
+    visibility: hidden; /* Prevent interaction */
+}

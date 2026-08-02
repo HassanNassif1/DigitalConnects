@@ -1,0 +1,122 @@
+/* app.css */
+
+/* Container for Instagram section */
+.instagram-container {
+    display: flex;
+    width: 50%;
+}
+.dark-calendar {
+  background-color: #0a0a2a !important;
+  color: #fff !important;
+  border: none !important;
+  width: 100%;
+}
+
+.dark-calendar .react-calendar__tile {
+  background: #0a0a2a !important;
+  color: #1FBf7A !important;
+  font-weight: 600;
+}
+
+.dark-calendar .react-calendar__tile--active {
+  background: #2E3192 !important;
+  color: #fff !important;
+}
+
+/* Jump animation for platform icons */
+.platform-icon-rotate {
+    animation: jump 1.5s ease-in-out infinite;
+}
+
+@keyframes jump {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Custom table styling */
+.custom-table {
+    flex: 1;
+    width: auto;
+}
+
+/* Styled buttons */
+.StyledButton {
+    color: rgb(46, 124, 134);
+}
+
+
+
+
+
+.StyledProfit {
+    background-color: rgb(46, 124, 134);
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 25%;
+    border-radius: 15px;
+    height: 70px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Totals section spacing */
+.Totals {
+    margin-top: 10%;
+}
+
+/* Platform Box Card */
+.platform-box {
+    border: 2px solid rgba(46,49,146,255);
+    background-color: rgba(46,49,146,255);
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    height: 40vh;
+    color: white;
+    width: 300px;
+    display: inline-block;
+    transition: all 0.3s ease; /* Smooth hover effect */
+}
+.relative{
+    margin-right:1400px;
+    max-height:30px;
+   margin-top:-2%;
+}
+/* Hover effect for platform boxes */
+.platform-box:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Platform name positioning inside the box */
+.platform-name {
+    margin-top: -45px;
+    margin-left: 55px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Optional: Make all text inside platform boxes centered */
+.platform-box p {
+    text-align: center;
+    margin-top: 10px;
+}
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating-card {
+  animation: float 4s ease-in-out infinite;
+}

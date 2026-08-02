@@ -1,0 +1,70 @@
+.instagram-container {
+    display: flex;
+    width: 50%;
+  }
+  .circle-image {
+    border-radius: 35%;
+    height: 230px; /* Set a fixed height for the circular image */
+    width: 230px; /* Set a fixed width for the circular image */
+    margin: 20px auto; /* Center the image horizontally and add some margin */
+    display: block;
+}
+  .custom-table {
+    flex: 1;
+    width: auto;
+  }
+  .StyledButton{
+   color: rgb(46, 124, 134);
+  
+  }
+  .light-mode-search  {
+    color: black !important;
+  }
+  .light-mode-search .ant-input {
+    color: black !important;
+  }
+  .dark-mode-container {
+    background-color: rgb(22, 22, 22) !important;
+    color: white !important;
+  }
+  .dark-mode-container button {
+    background-color: rgb(22, 22, 22); /* Set the background color to dark mode color for buttons */
+    color: white; /* Set the text color to white when dark mode is enabled */
+  }
+  
+  /* Add the following rule to set the background color for the StyledProfit div in dark mode */
+  .dark-mode-container .StyledProfit {
+    background-color: rgb(22, 22, 22); /* Set the background color to dark mode color for StyledProfit */
+    color: white; /* Set the text color to white when dark mode is enabled */
+  }
+  .light-mode-search .ant-input::placeholder {
+    color: rgba(45, 37, 37, 0.514) !important;
+  }
+  
+  .light-mode-search .ant-input-search-icon {
+    color: black !important;
+  }
+  .dark-mode-search {
+    background-color: rgb(22, 22, 22);
+    color: white;
+  }
+  .dark-mode-table {
+    border: 1px solid rgb(46, 124, 134);
+  }
+  .dark-mode-table-header {
+    background-color: rgb(22, 22, 22) !important;
+    color: white !important;
+  }
+  .StyledProfit {
+    background-color: rgb(46, 124, 134);
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 25%;
+    border-radius: 15px; /* Adjust this value to make it smoother */
+    height: 70px;
+    width:300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

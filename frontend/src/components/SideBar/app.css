@@ -1,0 +1,285 @@
+.admin-sidebarr {
+    color: white;
+     max-width: 100px;
+     height: 100%; /* position: fixed; */ 
+     top: 0;
+      left: 0; 
+      position: fixed;
+ /* background: linear-gradient(145deg, #2E3192, #336699, #1FBf7A); */
+      opacity: 1;
+      z-index: 1001;
+}
+
+.admin-sidebarr .circle-image {
+    width: 32px !important;   /* smaller width */
+    height: 32px !important;  /* smaller height */
+    margin-bottom: 10px !important;
+    border-radius: 50% !important;
+}
+.sidebar-container{
+    height:100vw;
+}
+span{
+    font-size:20px;
+   
+}
+.admin-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    
+    flex-direction: column;
+    gap: 10px; /* spacing between links */
+    width: 100%;
+    align-items: center; /* center items horizontally */
+}
+.admin-menu li {
+    margin: 15px 0;
+    position: relative;
+}
+
+.Dashboard{
+    margin-left:-10px;
+}
+.admin-menu li .dropdown-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    height: 35px;
+}
+
+.admin-menu li:hover .dropdown-header {
+    background-color: rgba(255, 255, 255, 0.1); 
+}
+.sidebar-toggle{
+    background-color: rgba(46, 49, 146, 255);
+}
+.sidebar-toggle:hover{
+    background-color:rgba(60, 63, 177, 0.9); 
+}
+
+/* Dropdown header (the clickable part) */
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;  /* center icon horizontally */
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-header:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown content (hidden by default) */
+
+.dropdown-content {
+    position: absolute;
+    top: 0;
+    left: 100%; /* or left: 0 if below */
+    background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+    width: 50px;
+    border-radius: 4px;
+     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 140, 255, 0.3);
+    list-style: none;
+
+    /* Remove fixed height */
+    height: 25vh;      /* height adjusts based on content */
+    min-height: none;  /* no restriction */
+    
+    overflow: hidden;  
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+      box-shadow:  0 50px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 140, 255, 0.3);
+          
+}
+/* Arrow is hidden by default */
+.arrow {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+/* Show arrow on hover of the header */
+.dropdown-header:hover .arrow {
+  opacity: 1;
+}
+
+/* Rotate arrow when dropdown is open */
+.arrow.open {
+  transform: rotate(180deg);
+  opacity: 1; /* ensure visible when open even if not hovering */
+}
+
+
+/* Dropdown items */
+.dropdown-content li {
+    list-style: none;
+  padding: 8px 12px;
+
+  border-radius: 4px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-content li a:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+/* Links inside dropdown */
+.dropdown-content li a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    color: white;
+    text-decoration: none;
+    width: 100%;
+}
+.admin-menu li.dropdown {
+    position: relative; /* necessary for absolute child */
+}
+
+
+.toggle-dark-mode {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.toggle-dark-mode h2 {
+    cursor: pointer;
+    margin: 0;
+}
+
+.admin-sidebarr a {
+    text-decoration: none;
+    color: white; /* Change link color */
+}
+
+.admin-sidebarr a:hover {
+    color: rgba(255, 255, 255, 0.8); /* Lighter link color on hover */
+}
+
+
+
+
+.sidebar-toggle {
+    transition: left 0.3s ease; /* Transition for button position */
+}
+
+/* Add transition for content visibility */
+.admin-menu,
+.circle-image {
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Transition for visibility */
+}
+
+.admin-sidebarr.collapsed .admin-menu,
+.admin-sidebarr.collapsed .circle-image {
+    opacity: 0; /* Hide content */
+    visibility: hidden; /* Prevent interaction */
+}
+.admin-menu li a {
+    display: flex;
+    flex-direction: column; /* icon on top, text below (optional) */
+    align-items: center;
+    justify-content: center;
+    padding: 10px; /* padding around icons */
+    color: white;
+    text-decoration: none;
+}
+.admin-menu li a:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+.bottom-buttons {
+    margin-top: 30px; /* space from main links */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+
+
+.dropdown-contentI {
+    background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+    position: absolute;
+    top: 0;
+    left: 100%; /* or left: 0 if below */
+    width: 120px;
+    border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 140, 255, 0.3);
+           
+    list-style: none;
+
+    /* Remove fixed height */
+    height: 55vh;      /* height adjusts based on content */
+    min-height: none;  /* no restriction */
+    
+    overflow: hidden;  
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+
+.dropdown:hover .dropdown-contentI {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+
+/* Dropdown items */
+.dropdown-contentI li {
+    list-style: none;
+  padding: 8px 12px;
+
+  border-radius: 10%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-contentI li a:hover {
+    background-color: rgba(255,255,255,0.15);
+    
+}
+body {
+  content: "";
+  position: sticky;
+  overflow-y: auto;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+
+  z-index: -1;
+}
+
+
+/* Links inside dropdown */
+.dropdown-contentI li a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    color: white;
+    text-decoration: none;
+    width: 100%;
+}

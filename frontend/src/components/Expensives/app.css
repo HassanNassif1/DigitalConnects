@@ -1,0 +1,47 @@
+.dark-mode-table {
+    background-color: rgb(22, 22, 22);
+    color: white;
+  }
+  /* Add these styles to your CSS */
+.custom-select.ant-select-selector {
+  background-color: rgb(22, 22, 22);
+  color: white; /* Adjust text color as needed */
+  border-color: rgb(22, 22, 22);
+}
+
+/* Additional styles for dropdown menu items in dark mode */
+.custom-select.ant-select-dropdown-menu-item {
+  background-color: rgb(22, 22, 22);
+  color: white; /* Adjust text color as needed */
+}
+
+/* Additional styles for selected option in dark mode */
+.custom-select.ant-select-item-option-selected {
+  background-color: rgb(22, 22, 22);
+  color: white; /* Adjust text color as needed */
+}
+
+  .light-mode-table {
+    background-color: white;
+    color: black;
+  }
+  .dark-mode-select {
+    color: white;
+  }
+  .admin-sidebar {
+    width: 20%;
+    min-width: 200px;
+    height: 100%;
+    background-color: rgb(46, 124, 134);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.custom-table {
+    flex: 1;
+    width: auto;
+  }
+body{
+    background: linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95), rgba(0,180,200,0.95)) !important;
+}

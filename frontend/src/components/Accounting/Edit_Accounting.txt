@@ -1,0 +1,282 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Input, Button, message } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDarkMode } from "../DarkMode/DarkModeContext";
+import "./EditAccounting.css";
+
+const Edit_Accounting = () => {
+  const { id } = useParams();
+  const [record, setRecord] = useState([]);
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [remainingChanged, setRemainingChanged] = useState(null); // Timestamp
+  const [isPaid, setIsPaid] = useState(false);
+  const { isDarkMode } = useDarkMode();
+  const navigate = useNavigate();
+
+  // Fetch record on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!id) return;
+
+        const response = await axios.get(
+          `http://localhost:5000/api/GetAccountingById/${id}`
+        );
+
+        const formattedRecord = response.data.map((item) => ({
+          ...item,
+          plan_date: item.plan_date
+            ? new Date(item.plan_date).toISOString().split("T")[0]
+            : "",
+          isPaid: item.isPaid || false,
+        }));
+
+        setRecord(formattedRecord);
+
+        if (formattedRecord.length > 0) {
+          setIsPaid(formattedRecord[0].isPaid);
+
+          // Ensure remaining_changed is parsed as Date object
+          const dbValue = formattedRecord[0].remaining_changed;
+          setRemainingChanged(dbValue ? new Date(dbValue) : null);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        message.error("Error fetching accounting data");
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  // Handle input changes
+  const handleInputChange = (event, index) => {
+    const { name, value } = event.target;
+
+    setRecord((prevRecord) => {
+      const updatedRecord = [...prevRecord];
+      updatedRecord[index] = {
+        ...updatedRecord[index],
+        [name]:
+          name === "plan_date"
+            ? new Date(value).toISOString().split("T")[0]
+            : value,
+      };
+      return updatedRecord;
+    });
+
+    // ✅ Update remaining_changed only when 'package' changes
+    if (name === "remaining_package") {
+      setRemainingChanged(new Date()); // current local timestamp
+    }
+  };
+
+  // Set selected platform when record is loaded
+  useEffect(() => {
+    if (record.length > 0) {
+      setSelectedPlatform(record[0].platform);
+    }
+  }, [record]);
+
+  // Handle form submission
+  const handleUpdate = async (event) => {
+    event.preventDefault();
+    const updatedRecord = record[0];
+
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/UpdateAccounting/${id}`,
+        {
+          ...updatedRecord,
+          platform: selectedPlatform,
+          isPaid,
+          remaining_changed: remainingChanged, // send full timestamp
+        }
+      );
+
+      if (response.status === 200) {
+        message.success(response.data.message);
+
+        // Ensure frontend uses the timestamp returned from backend
+        if (response.data.remaining_changed) {
+          const dbValue = response.data.remaining_changed;
+          setRemainingChanged(dbValue ? new Date(dbValue) : null);
+        }
+
+        navigate("/accounting");
+      } else {
+        message.error(
+          `Update failed: ${response.data.message || "Unknown error"}`
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error updating record:",
+        error.response ? error.response.data : error.message
+      );
+      message.error("Error updating record");
+    }
+  };
+
+  return (
+    <div className={`container ${isDarkMode ? "dark-mode" : ""}`} align="center">
+      <div className={`form-container ${isDarkMode ? "dark-mode" : ""}`}>
+        <h1 className={`my-4 ${isDarkMode ? "text-light" : "text-dark"}`}>
+          Edit Accounting Record
+        </h1>
+        <form className="form-group" onSubmit={handleUpdate}>
+          {record.map((e, index) => (
+            <div key={index} className="form-group row">
+              {/* Username */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Username:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="text"
+                  name="username"
+                  value={e.username}
+                  disabled
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              </div>
+
+              {/* Plan Date */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Plan Date:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="date"
+                  name="plan_date"
+                  value={e.plan_date}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              </div>
+
+              {/* Amount */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Amount:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="number"
+                  name="amount"
+                  value={e.amount}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              </div>
+
+              {/* Package */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Package:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="text"
+                  name="package"
+                  value={e.package}
+                  onChange={(event) => handleInputChange(event, index)} // timestamp updates here
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              </div>
+
+              {/* Remaining Payment */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Remaining Payment:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="text"
+                  name="remaining_payment"
+                  value={e.remaining_payment}
+                  onChange={(event) => handleInputChange(event, index)} // no timestamp logic here
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              
+              </div>
+
+              {/* Price on Me */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Price on Me:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="text"
+                  name="price_on_me"
+                  value={e.price_on_me}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+              </div>
+
+              {/* Remaining Package */}
+              <div className="col-sm-4">
+                <label className={`form-label ${isDarkMode ? "text-light" : ""}`}>
+                  Remaining Package:
+                </label>
+              </div>
+              <div className="col-sm-8">
+                <Input
+                  type="text"
+                  name="remaining_package"
+                  value={e.remaining_package}
+                  onChange={(event) => handleInputChange(event, index)} // timestamp updates here
+                  className={`custom-input ${isDarkMode ? "dark-input" : ""}`}
+                />
+                <small
+                  className="d-block"
+                  style={{
+                    background:
+                      "linear-gradient(145deg, rgba(46,49,146,0.95), rgba(30,33,100,0.95))",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    fontWeight: "500",
+                  }}
+                >
+                  Remaining package last updated at:{" "}
+                  {remainingChanged
+                    ? remainingChanged.toLocaleString("en-US", {
+                        timeZone: "Asia/Beirut",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        hour12: true,
+                      })
+                    : "N/A"}
+                </small>
+              </div>
+            </div>
+          ))}
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={`custom-button ${isDarkMode ? "dark-button" : ""}`}
+          >
+            Update
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Edit_Accounting;

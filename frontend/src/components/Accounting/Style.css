@@ -1,0 +1,58 @@
+.TableDesign{
+    margin:40px;
+    background-color: rgb(176, 192, 202);
+    color:rgba(73, 71, 71, 0.933);
+    border-color: transparent;
+    min-width:300px;
+    margin-left:20%;
+}
+thead{
+    color:rgb(255, 255, 255);
+    background-color: rgb(111, 147, 170);
+}
+
+h1{
+    color: white;
+}
+.insert-form{
+    position:absolute;
+    
+}
+.Delete-Button{
+    margin-left:-15px;
+    margin-top:-31px;
+}
+
+.Buttons{
+    margin-left:50px;
+}
+.Edit-Button{
+    margin-left:-60px;
+}.TableDesign{
+    margin:40px;
+    background-color: rgb(176, 192, 202);
+    color:rgba(73, 71, 71, 0.933);
+    border-color: transparent;
+    min-width:300px;
+    margin-left:15px;
+}
+thead{
+    color:rgb(255, 255, 255);
+    background-color: rgb(111, 147, 170);
+}
+
+.insert-form{
+    position:absolute;
+    
+}
+.Delete-Button{
+    margin-left:-15px;
+    margin-top:-31px;
+}
+
+.Buttons{
+    margin-left:50px;
+}
+.Edit-Button{
+    margin-left:-60px;
+}

@@ -1,0 +1,27 @@
+.center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Set the height to the full viewport height */
+    width: 50%;
+    margin-left:30%;
+  }
+  .doneButton {
+    background-color: blue;
+    border-color: blue;
+    color: white;
+  }
+  
+  .pendingButton {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+  .dark-mode-input-placeholder {
+    color: white !important; /* Override default placeholder color */
+  }
+  .dark-mode-h1 {
+    color: white;
+  }
+  

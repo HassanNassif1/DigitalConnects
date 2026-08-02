@@ -1,0 +1,75 @@
+.instagram-container {
+    display: flex;
+    width: 50%;
+  }
+  
+  .custom-table {
+    flex: 1;
+    width: auto;
+  }
+  .StyledButton{
+   color: rgb(46, 124, 134);
+  }
+  .StyledPlatform{
+ 
+ margin-top: 18%;
+ margin-left:10%;
+ width:300px;
+ height:100px;
+ font-size: 20px;
+  }
+  .movingImageContainer {
+    position: relative;
+    
+  }
+  
+  .movingImage {
+    position: absolute;
+    width: 700px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+    animation: moveImage 8s ease-in-out infinite; /* Adjust the duration and timing function */
+    margin-left: -25%;
+    border-radius: 10px; /* Add border-radius for a softer look */
+    
+    /* Add a subtle shadow for depth */
+  }
+  
+  @keyframes moveImage {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(500px); /* Increase the distance you want the image to move */
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+/* Add this to your app.css or another stylesheet */
+
+/* Dark mode styles */
+.dark-mode {
+  background-color: #1a1a1a; /* Dark background color for the entire page */
+  color: #ffffff; /* Default text color for dark mode */
+}
+
+
+
+.StyledPlatform {
+  /* Default styles for the button */
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition-duration: 0.4s;
+  border-radius: 5px;
+}
+
+/* Dark mode styles for the button */
+.StyledPlatform.dark-mode {
+  background-color: black;
+  color: white;
+}

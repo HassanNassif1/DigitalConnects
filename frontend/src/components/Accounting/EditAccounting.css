@@ -1,0 +1,69 @@
+.container {
+  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.7);
+}
+h1{
+    color:white;
+}
+/* In your EditAccounting.css */
+.history-container {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-input {
+  background-color: #1a1a2e !important; /* Force dark background */
+  color: #ffffff !important;            /* Force white text */
+  border: 1px solid #444 !important;
+  border-radius: 5px;
+  padding: 0.5rem;
+  width: 100%;
+  caret-color: #ffffff;
+
+}
+.form-group{
+  display: contents !important ;
+}
+.custom-input:focus {
+  background-color: #1a1a2e !important;
+  color: #ffffff !important;
+  outline: none;
+  border-color: #888;
+}
+
+.custom-input::placeholder {
+  color: #cccccc !important;
+}
+.form-label label{
+    color: white !important;
+}
+.form-container{
+      background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%) !important;
+   
+}
+.custom-button {
+  margin-top: 1.5rem;
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+}
+h6{
+    color: white;
+}
+.custom-button:hover {
+  background-color: #34495e;
+}
+
+.dark-mode .custom-input {
+  background-color: #111827; /* Even darker background for dark mode */
+  color: #e5e7eb;
+}
+
+.dark-mode .form-label {
+  color: #e5e7eb;
+}

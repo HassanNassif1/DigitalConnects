@@ -1,0 +1,151 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: middle;
+  height: 100vh;
+}
+form {
+  margin-top: 20px;
+}
+  /* CSS for green toast */
+.toast-success {
+  background-color: #00ff00;
+  color: #fff;
+}
+
+/* CSS for red toast */
+.toast-error {
+  background-color: #ff0000;
+  color: #fff;
+}
+  .Register{
+    color:black;
+  font-size: 18px;
+  }
+  .Register:hover{
+    color:rgb(112, 150, 174);
+  font-size: 18px;
+  }
+  .dark-mode .sub-main {
+    background-color: rgb(22, 22, 22);
+    color: white;
+  }
+  
+  .sub-main {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin: 0 auto;
+    color: rgb(22, 22, 22);
+  }
+  .input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 50px;
+    font-size: 15px;
+    border-color: rgb(22, 22, 22);
+    margin-bottom: 16px;
+    background-color: #fff;
+    color: rgb(22, 22, 22);
+  }
+  
+  .dark-mode .input {
+    background-color: rgb(22, 22, 22);
+    color: white;
+  }
+  .imgs {
+      padding-top: 20px;
+      justify-content: center;
+      display: flex;
+    }
+  .container-image {
+    background-color: white; 
+    border-radius: 150px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 115px;
+    width: 115px;
+  }
+  .profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+   background-color: transparent;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .username{
+      width: 300px;
+      height: 50px;
+      border-radius: 60px;
+      box-shadow: inset white;
+      border: none;
+      outline: none;
+      background-color: #fff;
+  }
+  .password{
+    margin-top: 3%;
+    width: 300px;
+    height: 50px;
+    border-radius: 60px;
+    box-shadow: inset white;
+    border: none;
+    outline: none;
+    background-color: #fff;
+}
+
+  .email{
+      height: 25px;
+      width: 25px;
+      position: absolute;
+      padding: 14px 0 0 25px;
+  }
+
+  .name{
+      padding-left: 70px;
+      font-size: 20px;
+      margin-top:15px;
+  }
+  .second-input{
+      padding-top: 20px;
+  }
+
+  .button {
+    background-color: #1890ff; /* Set your desired button color */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    height:100%;
+    width: 100%;
+    
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #096dd9; /* Set a slightly darker color on hover */
+  }
+
+  .link{
+      font-size: 25px;
+      font-weight: 400;
+  }
+   a{
+       color: blue;
+   }
+   .darkmode{
+     background-color: black;
+     color:white;
+
+   }

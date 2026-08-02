@@ -1,0 +1,164 @@
+.create-accounting-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100vh;
+  color: #fff;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 100%;
+  min-height: 200vh;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0;
+  padding: 60px 80px; /* more breathing room */
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.6s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #00c4ff;
+  font-size: 2rem;
+}
+
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* slightly larger fields */
+  gap: 24px 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #d5dde5;
+  margin-bottom: 8px;
+  letter-spacing: 0.4px;
+}
+
+/* Increased input & select field sizes */
+.ant-input,
+.ant-select-selector {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  transition: all 0.25s ease-in-out;
+  padding: 12px 14px !important; /* taller input */
+  font-size: 16px !important; /* larger font */
+  height: 48px !important; /* taller field */
+  line-height: 1.6 !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.ant-input:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: #00b4ff !important;
+  box-shadow: 0 0 6px #00b4ff;
+}
+
+/* Checkbox area */
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 16px;
+}
+
+.checkbox-field .ant-checkbox + span {
+  color: #d5dde5;
+  font-weight: 500;
+}
+
+/* Bigger, bolder button */
+.submit-btn {
+  width: 100%;
+  margin-top: 40px;
+  background: linear-gradient(145deg, #00b4ff, #3b66ff) !important;
+  border: none !important;
+  height: 54px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px !important;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(145deg, #0092cc, #324fd6) !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 992px) {
+  .form-card {
+    padding: 40px 30px;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .ant-input,
+  .ant-select-selector {
+    font-size: 15px !important;
+    height: 44px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-card {
+    padding: 30px 20px;
+  }
+
+  .form-title {
+    font-size: 1.4rem;
+  }
+
+  .submit-btn {
+    font-size: 15px;
+    height: 48px;
+  }
+}

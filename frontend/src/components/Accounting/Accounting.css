@@ -1,0 +1,44 @@
+.glow-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+.glow-box:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+}
+.ant-table-thead > tr > th {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+}
+.ant-table-tbody > tr > td {
+  background: transparent !important;
+  color: white !important;
+}
+.accounting-dashboard {
+  width: 100vw;        /* full viewport width */
+  height: 100vh;       /* full viewport height */
+  margin: 0;           /* remove default margin */
+  padding: 0;          /* remove default padding */
+  background: #0a0f1f; /* optional background */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.accounting-dashboard .ant-table {
+  width: 100% !important;  /* table covers full container */
+}
+
+.accounting-dashboard .ant-table-container {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.accounting-dashboard .ant-table-wrapper {
+  width: 100% !important;
+}
