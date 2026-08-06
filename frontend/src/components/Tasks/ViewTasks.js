@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Space, Button, message, Card, Typography, Tag, Tabs, Popconfirm } from 'antd';
+import { Table, Space, Button, message, Card, Typography, Tag, Tabs, Popconfirm, Dropdown } from 'antd';
 import axios from 'axios';
 import { 
   CheckCircleOutlined, 
@@ -8,7 +8,10 @@ import {
   DeleteOutlined, 
   UndoOutlined,
   ExclamationCircleOutlined,
-  EditOutlined
+  EditOutlined,
+  SyncOutlined,
+  AuditOutlined,
+  MoreOutlined
 } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +31,23 @@ const ViewTasks = () => {
   const accentColor = "#6c5ce7";
   const secondaryText = "rgba(255, 255, 255, 0.6)";
   const cardShadow = "0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(108,92,231,0.05)";
+
+  // Status color mapping
+  const statusColors = {
+    'Pending': '#faad14',
+    'In Progress': '#1890ff',
+    'Review': '#722ed1',
+    'Done': '#52c41a'
+  };
+
+  const statusIcons = {
+    'Pending': <ClockCircleOutlined />,
+    'In Progress': <SyncOutlined spin />,
+    'Review': <AuditOutlined />,
+    'Done': <CheckCircleOutlined />
+  };
+
+  const statusOptions = ['Pending', 'In Progress', 'Review', 'Done'];
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -63,6 +83,12 @@ const ViewTasks = () => {
   };
 
   const updateTaskStatus = async (taskId, newStatus) => {
+    // Validate that taskId is a number
+    if (!taskId || isNaN(taskId)) {
+      message.error('Invalid task ID');
+      return;
+    }
+
     const previousTasks = [...tasks];
     setTasks(prevTasks => 
       prevTasks.map(task => 
@@ -102,56 +128,157 @@ const ViewTasks = () => {
     navigate(`/EditTask/${taskId}`);
   };
 
+  // Get status change options (exclude current status)
+  const getStatusChangeOptions = (taskId, currentStatus) => {
+    return statusOptions
+      .filter(status => status !== currentStatus)
+      .map(status => ({
+        key: status,
+        label: (
+          <span>
+            {statusIcons[status]} {status}
+          </span>
+        ),
+        onClick: () => updateTaskStatus(taskId, status) // Pass taskId and status correctly
+      }));
+  };
+
+  // Filter tasks by status
   const pendingTasks = useMemo(() => tasks.filter(task => task.status === 'Pending'), [tasks]);
+  const inProgressTasks = useMemo(() => tasks.filter(task => task.status === 'In Progress'), [tasks]);
+  const reviewTasks = useMemo(() => tasks.filter(task => task.status === 'Review'), [tasks]);
   const completedTasks = useMemo(() => tasks.filter(task => task.status === 'Done'), [tasks]);
 
-  const pendingColumns = [
-    { 
-      title: 'Task', 
-      dataIndex: 'text', 
-      key: 'text',
-      render: (text) => <span style={{ color: textColor, fontWeight: 500 }}>{text}</span>
-    },
-    {
-      title: 'Created',
-      key: 'date',
-      dataIndex: 'date',
-      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
-      render: (text) => <Tag style={{ background: inputBg, borderColor: borderColor, color: textColor }}>{formatDate(text)}</Tag>,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      align: 'right',
-      render: (text, record) => (
+  // Common columns for all tables
+  const getColumns = (currentStatus) => {
+    const isDone = currentStatus === 'Done';
+    
+    const columns = [
+      { 
+        title: 'Task', 
+        dataIndex: 'text', 
+        key: 'text',
+        render: (text) => (
+          <span style={{ 
+            color: isDone ? 'rgba(255,255,255,0.6)' : textColor, 
+            textDecoration: isDone ? 'line-through' : 'none',
+            fontWeight: isDone ? 400 : 500 
+          }}>
+            {text}
+          </span>
+        )
+      },
+      {
+        title: 'Status',
+        key: 'status',
+        dataIndex: 'status',
+        render: (status) => (
+          <Tag 
+            icon={statusIcons[status]}
+            color={statusColors[status]}
+            style={{ 
+              background: `${statusColors[status]}20`, 
+              border: `1px solid ${statusColors[status]}40`,
+              color: statusColors[status],
+              fontWeight: 500
+            }}
+          >
+            {status}
+          </Tag>
+        )
+      },
+      {
+        title: 'Created',
+        key: 'date',
+        dataIndex: 'date',
+        responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+        render: (text) => (
+          <Tag style={{ background: inputBg, borderColor: borderColor, color: textColor }}>
+            {formatDate(text)}
+          </Tag>
+        ),
+      },
+      {
+        title: 'Actions',
+        key: 'actions',
+        align: 'right',
+        render: (text, record) => {
+          const statusOptions = getStatusChangeOptions(record.id, record.status);
+          
+          return (
+            <Space wrap size="small">
+              <Dropdown 
+                menu={{ items: statusOptions }}
+                trigger={['click']}
+                placement="bottomRight"
+              >
+                <Button
+                  icon={<MoreOutlined />}
+                  style={{
+                    background: 'rgba(108, 92, 231, 0.15)',
+                    border: `1px solid ${accentColor}40`,
+                    color: accentColor,
+                    borderRadius: 6,
+                    height: 32,
+                  }}
+                >
+                  Change Status
+                </Button>
+              </Dropdown>
+              
+              {!isDone && (
+                <Button 
+                  icon={<EditOutlined />}
+                  onClick={() => handleEdit(record.id)}
+                  style={{
+                    background: 'rgba(255, 193, 7, 0.15)',
+                    border: `1px solid rgba(255, 193, 7, 0.3)`,
+                    color: '#ffc107',
+                    borderRadius: 6,
+                    height: 32,
+                  }}
+                >
+                  Edit
+                </Button>
+              )}
+              
+              <Popconfirm
+                title="Delete this task?"
+                description="This action cannot be undone."
+                onConfirm={() => deleteTask(record.id)}
+                okText="Delete"
+                cancelText="Cancel"
+                icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
+                okButtonProps={{ danger: true }}
+              >
+                <Button 
+                  icon={<DeleteOutlined />}
+                  danger
+                  style={{ borderRadius: 6, height: 32, width: 32 }}
+                />
+              </Popconfirm>
+            </Space>
+          );
+        },
+      },
+    ];
+
+    // Add restore button for completed tasks
+    if (isDone) {
+      columns[3].render = (text, record) => (
         <Space wrap size="small">
           <Button 
-            type="primary"
-            onClick={() => updateTaskStatus(record.id, 'Done')}
-            icon={<CheckCircleOutlined />}
+            onClick={() => updateTaskStatus(record.id, 'Pending')}
+            icon={<UndoOutlined />}
             style={{
-              background: `linear-gradient(135deg, ${accentColor}, #8b7cf7)`,
-              border: "none",
-              boxShadow: `0 2px 8px ${accentColor}44`,
-              borderRadius: 6,
-              fontSize: '12px',
-              height: 32,
-            }}
-          >
-            Mark Done
-          </Button>
-          <Button 
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record.id)}
-            style={{
-              background: 'rgba(255, 193, 7, 0.15)',
-              border: `1px solid rgba(255, 193, 7, 0.3)`,
-              color: '#ffc107',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: `1px solid ${borderColor}`,
+              color: textColor,
               borderRadius: 6,
               height: 32,
             }}
           >
-            Edit
+            Restore
           </Button>
           <Popconfirm
             title="Delete this task?"
@@ -169,64 +296,11 @@ const ViewTasks = () => {
             />
           </Popconfirm>
         </Space>
-      ),
-    },
-  ];
+      );
+    }
 
-  const completedColumns = [
-    { 
-      title: 'Task', 
-      dataIndex: 'text', 
-      key: 'text',
-      render: (text) => <span style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'line-through' }}>{text}</span>
-    },
-    {
-      title: 'Completed On',
-      key: 'date',
-      dataIndex: 'date',
-      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
-      render: (text) => <Tag color="success" style={{ background: 'rgba(0, 184, 148, 0.2)', border: 'none', color: '#00b894' }}>{formatDate(text)}</Tag>,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      align: 'right',
-      render: (text, record) => (
-        <Space wrap size="small">
-          <Button 
-            onClick={() => updateTaskStatus(record.id, 'Pending')}
-            icon={<UndoOutlined />}
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: `1px solid ${borderColor}`,
-              color: textColor,
-              borderRadius: 6,
-              height: 32,
-            }}
-          >
-            Restore
-          </Button>
-          <div style={{ display: 'inline-block' }}>
-            <Popconfirm
-              title="Delete this task?"
-              description="This action cannot be undone."
-              onConfirm={() => deleteTask(record.id)}
-              okText="Delete"
-              cancelText="Cancel"
-              icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
-              okButtonProps={{ danger: true }}
-            >
-              <Button 
-                icon={<DeleteOutlined />}
-                danger
-                style={{ borderRadius: 6, height: 32, width: 32 }}
-              />
-            </Popconfirm>
-          </div>
-        </Space>
-      ),
-    },
-  ];
+    return columns;
+  };
 
   const items = [
     {
@@ -235,7 +309,7 @@ const ViewTasks = () => {
       children: (
         <Table
           dataSource={pendingTasks}
-          columns={pendingColumns}
+          columns={getColumns('Pending')}
           pagination={{ pageSize: 10, size: 'small' }}
           rowKey="id"
           className="dark-table"
@@ -246,11 +320,41 @@ const ViewTasks = () => {
     },
     {
       key: '2',
+      label: <span style={{ color: textColor }}><SyncOutlined /> In Progress ({inProgressTasks.length})</span>,
+      children: (
+        <Table
+          dataSource={inProgressTasks}
+          columns={getColumns('In Progress')}
+          pagination={{ pageSize: 10, size: 'small' }}
+          rowKey="id"
+          className="dark-table"
+          loading={loading}
+          scroll={{ x: 'max-content' }}
+        />
+      ),
+    },
+    {
+      key: '3',
+      label: <span style={{ color: textColor }}><AuditOutlined /> Review ({reviewTasks.length})</span>,
+      children: (
+        <Table
+          dataSource={reviewTasks}
+          columns={getColumns('Review')}
+          pagination={{ pageSize: 10, size: 'small' }}
+          rowKey="id"
+          className="dark-table"
+          loading={loading}
+          scroll={{ x: 'max-content' }}
+        />
+      ),
+    },
+    {
+      key: '4',
       label: <span style={{ color: textColor }}><CheckCircleOutlined /> Completed ({completedTasks.length})</span>,
       children: (
         <Table
           dataSource={completedTasks}
-          columns={completedColumns}
+          columns={getColumns('Done')}
           pagination={{ pageSize: 10, size: 'small' }}
           rowKey="id"
           className="dark-table"

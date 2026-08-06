@@ -12,16 +12,32 @@ import {
   Col,
   Typography,
   Space,
+  Tooltip,
 } from "antd";
-import { PlusOutlined, UserAddOutlined, UserOutlined, MailOutlined, PhoneOutlined, GlobalOutlined, StarOutlined } from "@ant-design/icons";
+import { 
+  PlusOutlined, 
+  UserAddOutlined, 
+  UserOutlined, 
+  MailOutlined, 
+  PhoneOutlined, 
+  GlobalOutlined, 
+  StarOutlined,
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  CreditCardOutlined,
+  LockOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import countriesData from "./countries.json";
+import chip from "./chip.png";
+import logo from "./logo.png";
 
 const { Text, Title } = Typography;
 
 function Sm_Create_User() {
-  const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [isCardDetailsVisible, setIsCardDetailsVisible] = useState(false);
   const [isBusinessProfile, setIsBusinessProfile] = useState(false);
@@ -40,6 +56,11 @@ function Sm_Create_User() {
   const [additionalImages, setAdditionalImages] = useState([]);
   const [additionalImagePreviews, setAdditionalImagePreviews] = useState([]);
   const [countries, setCountries] = useState([]);
+  
+  // Card flip states - each card has its own flip state
+  const [flippedCards, setFlippedCards] = useState({});
+  const [isCardNumberVisible, setCardNumberVisible] = useState({});
+  const [isCvvVisible, setCvvVisible] = useState({});
   
   // Social Media States
   const [instagram, setInstagram] = useState("");
@@ -75,12 +96,45 @@ function Sm_Create_User() {
   const secondaryText = "rgba(255,255,255,0.6)";
   const cardShadow = "0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(108,92,231,0.05)";
 
+  const navigate = useNavigate();
+  
   const handleIsBusinessProfile = (e) => {
     setIsBusinessProfile(e.target.checked);
   };
 
   const toggleCardDetails = () => {
     setIsCardDetailsVisible((prevState) => !prevState);
+    setFlippedCards({});
+  };
+
+  const handleFlip = (cardIndex) => {
+    setFlippedCards(prev => ({
+      ...prev,
+      [cardIndex]: !prev[cardIndex]
+    }));
+  };
+
+  const handleFlipAll = () => {
+    const allFlipped = cards.every((_, index) => flippedCards[index]);
+    const newFlipState = {};
+    cards.forEach((_, index) => {
+      newFlipState[index] = !allFlipped;
+    });
+    setFlippedCards(newFlipState);
+  };
+
+  const toggleCardNumberVisibility = (cardIndex) => {
+    setCardNumberVisible(prev => ({
+      ...prev,
+      [cardIndex]: !prev[cardIndex]
+    }));
+  };
+
+  const toggleCvvVisibility = (cardIndex) => {
+    setCvvVisible(prev => ({
+      ...prev,
+      [cardIndex]: !prev[cardIndex]
+    }));
   };
 
   const isValidEmail = (email) => {
@@ -134,6 +188,15 @@ function Sm_Create_User() {
     ]);
   };
 
+  const removeCard = (index) => {
+    const updatedCards = cards.filter((_, i) => i !== index);
+    setCards(updatedCards);
+    // Clean up flip states
+    const newFlipState = { ...flippedCards };
+    delete newFlipState[index];
+    setFlippedCards(newFlipState);
+  };
+
   const handleCountryChange = (value) => {
     setSelectedNationality(value);
     const code = countryPhoneCodes[value] || "";
@@ -175,6 +238,23 @@ function Sm_Create_User() {
     });
   };
 
+  // Format card number with spaces
+  const formatCardNumber = (num) => {
+    if (!num) return "";
+    const parts = [];
+    const str = num.toString().replace(/\s/g, '');
+    for (let i = 0; i < str.length; i += 4) {
+      parts.push(str.slice(i, i + 4));
+    }
+    return parts.join(" ");
+  };
+
+  // Format date for card display
+  const formatDateCard = (month, year) => {
+    if (!month && !year) return "MM / YY";
+    return `${month || "MM"} / ${year ? year.slice(-2) : "YY"}`;
+  };
+
   // Helper function to add credit cards after user creation
   const addCreditCards = async (userId, cardsData) => {
     const cardPromises = cardsData.map(card => {
@@ -190,7 +270,6 @@ function Sm_Create_User() {
         card_type: card.cardType === "Other" ? card.customCardType : card.cardType,
       };
       
-      // Only send if card has minimum required data
       if (cardPayload.card_number && cardPayload.cvv && cardPayload.user_id) {
         return axios.post("http://localhost:5000/post-credit-cards", cardPayload);
       }
@@ -229,7 +308,6 @@ function Sm_Create_User() {
     try {
       const formData = new FormData();
       
-      // User fields - match the backend exactly
       formData.append("username", values.username || "");
       if (isBusinessProfile && values.businessname) {
         formData.append("business_name", values.businessname);
@@ -247,7 +325,7 @@ function Sm_Create_User() {
       formData.append("email", email);
       formData.append("isverified", true);
 
-      // Social Media fields - match backend field names
+      // Social Media fields
       formData.append("instagram", instagram || "");
       formData.append("facebook", facebook || "");
       formData.append("snapchat", snapchat || "");
@@ -256,7 +334,6 @@ function Sm_Create_User() {
       formData.append("twitter", twitter || "");
       formData.append("gmail", gmail || "");
       
-      // Passwords
       formData.append("instagramPassword", instagramPassword || "");
       formData.append("facebookPassword", facebookPassword || "");
       formData.append("snapchatPassword", snapchatPassword || "");
@@ -265,7 +342,6 @@ function Sm_Create_User() {
       formData.append("twitterPassword", twitterPassword || "");
       formData.append("gmailPassword", gmailPassword || "");
       
-      // Emails
       formData.append("instagramEmail", instagramEmail || "");
       formData.append("facebookEmail", facebookEmail || "");
       formData.append("snapchatEmail", snapchatEmail || "");
@@ -274,25 +350,14 @@ function Sm_Create_User() {
       formData.append("twitterEmail", twitterEmail || "");
       formData.append("gmailEmail", gmailEmail || "");
 
-      // Profile image
       if (profileImage) {
         formData.append("profileImage", profileImage);
       }
 
-      // Additional images
       additionalImages.forEach((image) => {
         formData.append("additionalImages", image);
       });
 
-      // Log what we're sending for debugging
-      console.log("Sending form data to /CreateUser:");
-      for (let [key, value] of formData.entries()) {
-        if (!key.includes('password')) {
-          console.log(key, value);
-        }
-      }
-
-      // Call the backend API to create user
       const response = await axios.post(
         "http://localhost:5000/CreateUser",
         formData,
@@ -304,7 +369,6 @@ function Sm_Create_User() {
       );
 
       if (response.status === 200) {
-        // Get the user ID from the response
         const userId = response.data.id || response.data.userId;
         
         notification.success({
@@ -312,7 +376,6 @@ function Sm_Create_User() {
           description: response.data.message || "User created successfully!",
         });
         
-        // If credit cards were added and we have a user ID, add them
         if (isCardDetailsVisible && cards.length > 0 && userId) {
           const cardData = cards.filter(card => card.cardNumber && card.cvv);
           if (cardData.length > 0) {
@@ -329,11 +392,6 @@ function Sm_Create_User() {
               });
             }
           }
-        } else if (isCardDetailsVisible && cards.length > 0 && !userId) {
-          notification.warning({
-            message: "Note",
-            description: "User created. Credit cards will need to be added manually.",
-          });
         }
         
         setTimeout(() => navigate("/Users"), 1500);
@@ -356,6 +414,434 @@ function Sm_Create_User() {
       setLoading(false);
     }
   };
+
+  // Render a single card with 3D flip - FIXED to keep form in place
+  const renderCard = (card, index) => {
+    const cardNumberDisplay = formatCardNumber(card.cardNumber) || "•••• •••• •••• ••••";
+    const cardHolderDisplay = card.cardHolderName.toUpperCase() || "CARD HOLDER";
+    const expDisplay = formatDateCard(card.expirationMonth, card.expirationYear);
+    const cardTypeDisplay = card.cardType === "Other" ? card.customCardType : card.cardType || "Standard";
+    const isFlipped = flippedCards[index] || false;
+    const isCardNumVisible = isCardNumberVisible[index] || false;
+    const isCvvVisibleState = isCvvVisible[index] || false;
+
+    return (
+      <div key={index} style={{ marginBottom: 32 }}>
+        {/* Card Preview Container - Fixed height so it doesn't move */}
+        <div style={{
+          width: '100%',
+          maxWidth: '500px',
+          height: '280px',
+          margin: '0 auto',
+          position: 'relative',
+        }}>
+          {/* 3D Flip Container - Only this flips, stays in the same position */}
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              perspective: '1000px',
+              cursor: 'pointer',
+            }}
+            onClick={() => handleFlip(index)}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'relative',
+                transition: 'transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1)',
+                transformStyle: 'preserve-3d',
+                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              }}
+            >
+              {/* === FRONT FACE === */}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backfaceVisibility: 'hidden',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(135deg, #1a1a3e 0%, #0d0d24 100%)',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset',
+                  padding: '24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transform: 'rotateY(0deg)',
+                  zIndex: 2,
+                }}
+              >
+                {/* Glossy Overlay */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-50%',
+                    left: '-50%',
+                    width: '200%',
+                    height: '200%',
+                    background:
+                      'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)',
+                    transform: 'rotate(25deg)',
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                {/* Top Row: Card Type & Logo */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div
+                      style={{
+                        color: 'rgba(255,255,255,0.4)',
+                        fontSize: '11px',
+                        letterSpacing: '2px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Digital Connects
+                    </div>
+                    <div style={{ color: 'gold', fontWeight: 'bold', fontSize: '14px', marginTop: '2px' }}>
+                      {cardTypeDisplay}
+                    </div>
+                  </div>
+                  <img
+                    src={chip}
+                    alt="Chip"
+                    style={{ height: '40px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
+                  />
+                </div>
+
+                {/* Card Number */}
+                <div style={{ marginTop: '8px' }}>
+                  <div
+                    style={{
+                      color: '#ffffff',
+                      fontSize: '22px',
+                      letterSpacing: '4px',
+                      fontWeight: '500',
+                      fontFamily: 'monospace',
+                      textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>{cardNumberDisplay}</span>
+                    <Tooltip title="Toggle visibility">
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={isCardNumVisible ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCardNumberVisibility(index);
+                        }}
+                        style={{ color: 'rgba(255,255,255,0.5)' }}
+                      />
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* Bottom Row: Name & Expiry */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    paddingTop: '8px',
+                    width: '100%',
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        color: 'rgba(255,255,255,0.5)',
+                      }}
+                    >
+                      Card Holder
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: '600',
+                        color: '#fff',
+                        fontSize: '16px',
+                        letterSpacing: '0.5px',
+                      }}
+                    >
+                      {cardHolderDisplay}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div
+                      style={{
+                        fontSize: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        color: 'rgba(255,255,255,0.5)',
+                      }}
+                    >
+                      Expires
+                    </div>
+                    <div style={{ fontWeight: '600', color: '#fff', fontSize: '16px' }}>{expDisplay}</div>
+                  </div>
+                </div>
+
+                {/* Flip Hint */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    right: '16px',
+                    color: 'rgba(255,255,255,0.15)',
+                    fontSize: '10px',
+                    letterSpacing: '1px',
+                  }}
+                >
+                  Click to flip
+                </div>
+              </div>
+
+              {/* === BACK FACE === */}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backfaceVisibility: 'hidden',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(135deg, #1a1a3e 0%, #0d0d24 100%)',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset',
+                  padding: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transform: 'rotateY(180deg)',
+                  zIndex: 1,
+                }}
+              >
+                {/* Magnetic Stripe */}
+                <div
+                  style={{
+                    background: 'linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%)',
+                    height: '45px',
+                    width: '100%',
+                    marginTop: '10px',
+                    borderRadius: '4px',
+                  }}
+                />
+
+                {/* CVV Strip */}
+                <div
+                  style={{
+                    background: 'rgba(255,255,255,0.85)',
+                    height: '40px',
+                    width: '80%',
+                    margin: '12px auto',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                    paddingRight: '16px',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                  }}
+                >
+                  <span
+                    style={{
+                      color: '#1a1a1a',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                      fontFamily: 'monospace',
+                      letterSpacing: '2px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <span style={{ color: '#666', fontSize: '10px', fontWeight: 'normal' }}>CVV</span>
+                    {isCvvVisibleState ? card.cvv || '•••' : '•••'}
+                    <Tooltip title="Toggle visibility">
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={isCvvVisibleState ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCvvVisibility(index);
+                        }}
+                        style={{ color: '#666' }}
+                      />
+                    </Tooltip>
+                  </span>
+                </div>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    marginTop: 'auto',
+                    textAlign: 'center',
+                    color: 'rgba(255,255,255,0.2)',
+                    fontSize: '9px',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  AUTHORIZED SIGNATURE
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card Form Inputs - Completely separate, stays in place */}
+        <div
+          style={{
+            maxWidth: '500px',
+            margin: '16px auto 0',
+          }}
+        >
+          <Card
+            style={{
+              background: inputBg,
+              border: `1px solid ${borderColor}`,
+              borderRadius: 16,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <Text style={{ color: secondaryText, fontSize: 13 }}>Card #{index + 1}</Text>
+              <Space>
+                <Tooltip title={isFlipped ? 'Show Front' : 'Show Back'}>
+                  <Button
+                    icon={isFlipped ? <ArrowLeftOutlined /> : <ArrowRightOutlined />}
+                    onClick={() => handleFlip(index)}
+                    size="small"
+                    style={{ borderColor: borderColor, color: textColor }}
+                  />
+                </Tooltip>
+                {cards.length > 1 && (
+                  <Button
+                    type="text"
+                    danger
+                    icon={<PlusOutlined style={{ transform: 'rotate(45deg)' }} />}
+                    onClick={() => removeCard(index)}
+                    size="small"
+                  />
+                )}
+              </Space>
+            </div>
+
+            <Row gutter={[12, 12]}>
+              <Col span={24}>
+                <Input
+                  placeholder="Card Holder Name"
+                  value={card.cardHolderName}
+                  onChange={(e) => handleCardChange(index, 'cardHolderName', e.target.value)}
+                  style={{ background: inputBg, borderColor: borderColor, color: textColor }}
+                  prefix={<UserOutlined style={{ color: secondaryText }} />}
+                />
+              </Col>
+              <Col span={24}>
+                <Input.Password
+                  placeholder="Card Number"
+                  value={card.cardNumber}
+                  onChange={(e) => handleCardChange(index, 'cardNumber', e.target.value.replace(/\s/g, ''))}
+                  style={{ background: inputBg, borderColor: borderColor, color: textColor }}
+                  prefix={<CreditCardOutlined style={{ color: secondaryText }} />}
+                />
+              </Col>
+              <Col span={12}>
+                <Select
+                  placeholder="Year"
+                  value={card.expirationYear}
+                  onChange={(value) => handleCardChange(index, 'expirationYear', value)}
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ background: bgColor }}
+                >
+                  <Select.Option value="">YY</Select.Option>
+                  {Array.from({ length: 20 }, (_, i) => (
+                    <Select.Option key={i} value={String(new Date().getFullYear() + i)}>
+                      {String(new Date().getFullYear() + i)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+              <Col span={12}>
+                <Select
+                  placeholder="Month"
+                  value={card.expirationMonth}
+                  onChange={(value) => handleCardChange(index, 'expirationMonth', value)}
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ background: bgColor }}
+                >
+                  <Select.Option value="">MM</Select.Option>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <Select.Option key={i} value={String(i + 1).padStart(2, '0')}>
+                      {String(i + 1).padStart(2, '0')}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+              <Col span={12}>
+                <Input.Password
+                  placeholder="CVV"
+                  value={card.cvv}
+                  onChange={(e) => handleCardChange(index, 'cvv', e.target.value)}
+                  style={{ background: inputBg, borderColor: borderColor, color: textColor }}
+                  prefix={<LockOutlined style={{ color: secondaryText }} />}
+                />
+              </Col>
+              <Col span={12}>
+                <Select
+                  placeholder="Card Type"
+                  value={card.cardType}
+                  onChange={(value) => handleCardChange(index, 'cardType', value)}
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ background: bgColor }}
+                >
+                  <Select.Option value="">Select</Select.Option>
+                  <Select.Option value="Debit Card">Debit Card</Select.Option>
+                  <Select.Option value="Credit Card">Credit Card</Select.Option>
+                  <Select.Option value="Master Card">Master Card</Select.Option>
+                  <Select.Option value="Wish Card">Wish Card</Select.Option>
+                  <Select.Option value="OMT Card">OMT Card</Select.Option>
+                  <Select.Option value="American Express">American Express</Select.Option>
+                  <Select.Option value="Visa Card">Visa Card</Select.Option>
+                  <Select.Option value="Other">Other</Select.Option>
+                </Select>
+              </Col>
+              {card.cardType === 'Other' && (
+                <Col span={24}>
+                  <Input
+                    placeholder="Specify card type"
+                    value={card.customCardType}
+                    onChange={(e) => handleCardChange(index, 'customCardType', e.target.value)}
+                    style={{ background: inputBg, borderColor: borderColor, color: textColor }}
+                  />
+                </Col>
+              )}
+              <Col span={24}>
+                <Input
+                  placeholder="Billing Address (Optional)"
+                  value={card.billingAddress}
+                  onChange={(e) => handleCardChange(index, 'billingAddress', e.target.value)}
+                  style={{ background: inputBg, borderColor: borderColor, color: textColor }}
+                  prefix={<GlobalOutlined style={{ color: secondaryText }} />}
+                />
+              </Col>
+            </Row>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
+  // Check if all cards are flipped
+  const allFlipped = cards.every((_, index) => flippedCards[index]);
 
   return (
     <div style={{
@@ -663,290 +1149,28 @@ function Sm_Create_User() {
                 </Col>
               </Row>
 
-              {/* Social Media Section */}
-              <Divider style={{ borderColor: borderColor }}>
-                <Text strong style={{ color: textColor }}>Social Media Accounts</Text>
-              </Divider>
-
-              <Row gutter={[24, 16]}>
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>Instagram</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={instagram}
-                      onChange={(e) => setInstagram(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={instagramEmail}
-                      onChange={(e) => setInstagramEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={instagramPassword}
-                      onChange={(e) => setInstagramPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>Facebook</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={facebook}
-                      onChange={(e) => setFacebook(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={facebookEmail}
-                      onChange={(e) => setFacebookEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={facebookPassword}
-                      onChange={(e) => setFacebookPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>Snapchat</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={snapchat}
-                      onChange={(e) => setSnapchat(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={snapchatEmail}
-                      onChange={(e) => setSnapchatEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={snapchatPassword}
-                      onChange={(e) => setSnapchatPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>LinkedIn</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={linkedin}
-                      onChange={(e) => setLinkedin(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={linkedinEmail}
-                      onChange={(e) => setLinkedinEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={linkedinPassword}
-                      onChange={(e) => setLinkedinPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>TikTok</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={tiktok}
-                      onChange={(e) => setTiktok(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={tiktokEmail}
-                      onChange={(e) => setTiktokEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={tiktokPassword}
-                      onChange={(e) => setTiktokPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>Twitter / X</Text>}>
-                    <Input
-                      placeholder="Username"
-                      value={twitter}
-                      onChange={(e) => setTwitter(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={twitterEmail}
-                      onChange={(e) => setTwitterEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={twitterPassword}
-                      onChange={(e) => setTwitterPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12} lg={8}>
-                  <Form.Item label={<Text style={{ color: secondaryText }}>Gmail</Text>}>
-                    <Input
-                      placeholder="Gmail Account"
-                      value={gmail}
-                      onChange={(e) => setGmail(e.target.value)}
-                      style={{ background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input
-                      placeholder="Email"
-                      value={gmailEmail}
-                      onChange={(e) => setGmailEmail(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                    <Input.Password
-                      placeholder="Password"
-                      value={gmailPassword}
-                      onChange={(e) => setGmailPassword(e.target.value)}
-                      style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor, borderRadius: 8 }}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              {/* Card Details Section */}
+              {/* Card Details Section with 3D Flip */}
               {isCardDetailsVisible && (
                 <div style={{ marginTop: 24, paddingTop: 24, borderTop: `1px solid ${borderColor}` }}>
-                  <Title level={4} style={{ color: textColor, textAlign: 'center', marginBottom: 24 }}>
-                    💳 Card Details
-                  </Title>
-                  {cards.map((card, index) => (
-                    <Card
-                      key={index}
-                      size="small"
-                      style={{
-                        background: inputBg,
-                        border: `1px solid ${borderColor}`,
-                        borderRadius: 12,
-                        marginBottom: 16,
-                      }}
-                    >
-                      <Row gutter={[16, 16]}>
-                        <Col xs={24} md={12}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Card Holder Name</Text>
-                          <Input
-                            placeholder="Card Holder Name"
-                            value={card.cardHolderName}
-                            onChange={(e) => handleCardChange(index, "cardHolderName", e.target.value)}
-                            style={{ background: inputBg, borderColor: borderColor, color: textColor }}
-                          />
-                        </Col>
-                        <Col xs={24} md={12}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Card Number</Text>
-                          <Input.Password
-                            placeholder="Card Number"
-                            value={card.cardNumber}
-                            onChange={(e) => handleCardChange(index, "cardNumber", e.target.value)}
-                            style={{ background: inputBg, borderColor: borderColor, color: textColor }}
-                          />
-                        </Col>
-                        <Col xs={12} md={4}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Exp. Year</Text>
-                          <Select
-                            placeholder="YY"
-                            value={card.expirationYear}
-                            onChange={(value) => handleCardChange(index, "expirationYear", value)}
-                            style={{ width: '100%' }}
-                            dropdownStyle={{ background: bgColor }}
-                          >
-                            {Array.from({ length: 20 }, (_, i) => (
-                              <Select.Option key={i} value={String(new Date().getFullYear() + i)}>
-                                {String(new Date().getFullYear() + i)}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Col>
-                        <Col xs={12} md={4}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Exp. Month</Text>
-                          <Select
-                            placeholder="MM"
-                            value={card.expirationMonth}
-                            onChange={(value) => handleCardChange(index, "expirationMonth", value)}
-                            style={{ width: '100%' }}
-                            dropdownStyle={{ background: bgColor }}
-                          >
-                            {Array.from({ length: 12 }, (_, i) => (
-                              <Select.Option key={i} value={String(i + 1).padStart(2, "0")}>
-                                {String(i + 1).padStart(2, "0")}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Col>
-                        <Col xs={24} md={4}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>CVV</Text>
-                          <Input.Password
-                            placeholder="CVV"
-                            value={card.cvv}
-                            onChange={(e) => handleCardChange(index, "cvv", e.target.value)}
-                            style={{ background: inputBg, borderColor: borderColor, color: textColor }}
-                          />
-                        </Col>
-                        <Col xs={24} md={12}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Billing Address</Text>
-                          <Input
-                            placeholder="Optional"
-                            value={card.billingAddress}
-                            onChange={(e) => handleCardChange(index, "billingAddress", e.target.value)}
-                            style={{ background: inputBg, borderColor: borderColor, color: textColor }}
-                          />
-                        </Col>
-                        <Col xs={24} md={12}>
-                          <Text style={{ color: secondaryText, display: 'block', marginBottom: 4 }}>Card Type</Text>
-                          <Select
-                            placeholder="Select card type"
-                            value={card.cardType}
-                            onChange={(value) => handleCardChange(index, "cardType", value)}
-                            style={{ width: '100%' }}
-                            dropdownStyle={{ background: bgColor }}
-                          >
-                            <Select.Option value="Debit Card">Debit Card</Select.Option>
-                            <Select.Option value="Credit Card">Credit Card</Select.Option>
-                            <Select.Option value="Master Card">Master Card</Select.Option>
-                            <Select.Option value="Wish Card">Wish Card</Select.Option>
-                            <Select.Option value="OMT Card">OMT Card</Select.Option>
-                            <Select.Option value="American Express">American Express</Select.Option>
-                            <Select.Option value="Visa Card">Visa Card</Select.Option>
-                            <Select.Option value="Other">Other</Select.Option>
-                          </Select>
-                          {card.cardType === "Other" && (
-                            <Input
-                              placeholder="Please specify"
-                              value={card.customCardType}
-                              onChange={(e) => handleCardChange(index, "customCardType", e.target.value)}
-                              style={{ marginTop: 8, background: inputBg, borderColor: borderColor, color: textColor }}
-                            />
-                          )}
-                        </Col>
-                      </Row>
-                    </Card>
-                  ))}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                    <Title level={4} style={{ color: textColor, margin: 0 }}>
+                      💳 Card Details
+                    </Title>
+                    <Space>
+                      <Tooltip title={allFlipped ? "Show Front All" : "Show Back All"}>
+                        <Button 
+                          icon={allFlipped ? <ArrowLeftOutlined /> : <ArrowRightOutlined />} 
+                          onClick={handleFlipAll}
+                          style={{ borderColor: borderColor, color: textColor }}
+                        >
+                          {allFlipped ? 'Show Front' : 'Show Back'}
+                        </Button>
+                      </Tooltip>
+                    </Space>
+                  </div>
+
+                  {cards.map((card, index) => renderCard(card, index))}
+
                   <Button
                     type="dashed"
                     onClick={addCard}
@@ -1091,6 +1315,10 @@ function Sm_Create_User() {
         }
         .ant-card-head {
           border-bottom: 1px solid ${borderColor} !important;
+        }
+        .ant-tooltip-inner {
+          background: ${bgColor} !important;
+          color: ${textColor} !important;
         }
       `}</style>
     </div>

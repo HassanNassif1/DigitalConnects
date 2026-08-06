@@ -41,3 +41,18 @@
     padding: 0 8px !important;
   }
 }
+/* For the Revenue Wave: Ensure the SVG/path has a color */
+.revenue-line {
+    stroke: #a855f7; /* Example Purple */
+    stroke-width: 3px;
+    opacity: 1;
+}
+
+/* For the Task Text: Fix the overlapping absolute positioning */
+.donut-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Ensure only ONE of these is rendered at a time */
+}

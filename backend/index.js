@@ -2976,6 +2976,12 @@ app.put("/updateTaskStatus/:taskId", async (req, res) => {
   const { taskId } = req.params;
   const { status } = req.body;
 
+  // Validate status
+  const validStatuses = ['Pending', 'In Progress', 'Review', 'Done'];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Invalid status value" });
+  }
+
   const updateStatusQuery = `UPDATE "tasks" SET status = $1 WHERE id = $2`;
 
   try {

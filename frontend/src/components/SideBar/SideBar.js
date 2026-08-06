@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight, faMoneyBills } from '@fortawesome/free-solid-svg-icons';
 import digitalconnectsLogo from '../Images/digitalconnects.png';
 import {
   faAdd,
@@ -79,6 +79,16 @@ function Sidebar() {
         { path: "/expensives", label: "View Expenses" },
       ]
     },
+     {
+      id: "Salary",
+      icon: faMoneyBills,
+      label: "Salary",
+      subItems: [
+        { path: "/Salary", label: "Salary" },
+       
+      ]
+    },
+    
     {
       id: "Recovery",
       icon: faShield,
@@ -397,7 +407,7 @@ function Sidebar() {
           transform: scale(0.95);
         }
 
-        /* ===== MENU - PUSHED UP ===== */
+        /* ===== MENU - FIXED SCROLLING ===== */
         .sidebar-menu { 
           list-style: none; 
           padding: 0; 
@@ -407,15 +417,18 @@ function Sidebar() {
           gap: 1px; 
           flex: 1;
           overflow-y: auto;
+          overflow-x: hidden;
           padding-top: 2px;
+          min-height: 0; /* Important for flex scrolling */
         }
         
         .menu-group {
           background: transparent;
           border-radius: 10px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          overflow: hidden;
+          overflow: visible; /* Changed from 'hidden' to 'visible' */
           position: relative;
+          flex-shrink: 0;
         }
 
         .menu-group::before {
@@ -513,7 +526,7 @@ function Sidebar() {
           color: #a29bfe; 
         }
 
-        /* ===== SUBMENU - COMPACT ===== */
+        /* ===== SUBMENU - SCROLLABLE ===== */
         .submenu-container {
           max-height: 0; 
           opacity: 0;
@@ -522,8 +535,28 @@ function Sidebar() {
         }
 
         .submenu-container.open { 
-          max-height: 400px; 
+          max-height: 300px; 
           opacity: 1; 
+          overflow-y: auto; /* Added scrolling for submenu */
+          overflow-x: hidden;
+        }
+
+        /* Custom scrollbar for submenu */
+        .submenu-container.open::-webkit-scrollbar {
+          width: 2px;
+        }
+
+        .submenu-container.open::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .submenu-container.open::-webkit-scrollbar-thumb {
+          background: rgba(108, 92, 231, 0.3);
+          border-radius: 10px;
+        }
+
+        .submenu-container.open::-webkit-scrollbar-thumb:hover {
+          background: rgba(108, 92, 231, 0.6);
         }
         
         .submenu-list {
@@ -663,7 +696,8 @@ function Sidebar() {
             padding: 10px; 
             width: 200px;
             box-shadow: 8px 10px 30px rgba(0,0,0,0.9);
-            max-height: 400px; 
+            max-height: 300px; 
+            overflow-y: auto;
             z-index: 100;
           }
           .menu-group { position: relative; }

@@ -77,6 +77,7 @@ const hideSidebar = location.pathname === "/"; // Hide sidebar on login page
             <Route path="/" element={<User />} />
             <Route path="/EditTask/:id" element={<EditTask />} />
             <Route path="/Invoices_History" element={<AccountingLogs />} />
+            <Route path="/Salary" element={<SalaryTable/>} />
             <Route path="/UsersPage" element={<UsersPage/>} />
             <Route path="/Expenses_History" element={<ExpensesLogs />} />
             <Route path="/Dashboard" element={<Dashboard />} />
