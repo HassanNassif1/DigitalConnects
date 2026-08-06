@@ -8,6 +8,7 @@
   font-weight: bold;
   transition: 0.3s ease;
 }
+
 .glow-box:hover {
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
 }
@@ -41,4 +42,207 @@
 
 .accounting-dashboard .ant-table-wrapper {
   width: 100% !important;
+}
+/* Table Dark Mode Styles */
+.creative-dark-table .ant-table {
+  background: transparent !important;
+}
+
+.creative-dark-table .ant-table-thead > tr > th {
+  background: rgba(20, 20, 43, 0.8) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border-bottom: 2px solid rgba(108, 92, 231, 0.2) !important;
+  padding: 14px 16px !important;
+}
+
+.creative-dark-table .ant-table-tbody > tr {
+  background: transparent !important;
+  transition: all 0.3s ease !important;
+}
+
+.creative-dark-table .ant-table-tbody > tr > td {
+  background: rgba(20, 20, 43, 0.6) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  padding: 14px 16px !important;
+}
+
+.creative-dark-table .ant-table-tbody > tr:nth-child(even) > td {
+  background: rgba(26, 26, 53, 0.6) !important;
+}
+
+.creative-dark-table .ant-table-tbody > tr:hover > td {
+  background: rgba(108, 92, 231, 0.12) !important;
+  border-bottom-color: rgba(108, 92, 231, 0.15) !important;
+}
+
+/* Row hover glow effect */
+.creative-dark-table .ant-table-tbody > tr:hover {
+  box-shadow: 0 2px 20px rgba(108, 92, 231, 0.08);
+}
+
+/* White text for all table cells */
+.creative-dark-table .ant-table-tbody > tr > td .ant-typography,
+.creative-dark-table .ant-table-tbody > tr > td span,
+.creative-dark-table .ant-table-tbody > tr > td div,
+.creative-dark-table .ant-table-tbody > tr > td a {
+  color: #ffffff !important;
+}
+
+/* Badge text in table */
+.creative-dark-table .ant-badge-status-text {
+  color: #ffffff !important;
+}
+
+/* Tag text in table */
+.creative-dark-table .ant-tag {
+  color: #ffffff !important;
+}
+
+.creative-dark-table .ant-tag-blue {
+  background: rgba(24, 144, 255, 0.2) !important;
+  border-color: rgba(24, 144, 255, 0.3) !important;
+}
+
+.creative-dark-table .ant-tag-orange {
+  background: rgba(255, 165, 0, 0.2) !important;
+  border-color: rgba(255, 165, 0, 0.3) !important;
+}
+
+.creative-dark-table .ant-tag-purple {
+  background: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(108, 92, 231, 0.3) !important;
+}
+
+.creative-dark-table .ant-tag-success {
+  background: rgba(0, 184, 148, 0.2) !important;
+  border-color: rgba(0, 184, 148, 0.3) !important;
+  color: #00b894 !important;
+}
+
+/* Button text in table */
+.creative-dark-table .ant-btn {
+  color: #ffffff !important;
+}
+
+.creative-dark-table .ant-btn:hover {
+  color: #6c5ce7 !important;
+}
+
+/* Pagination */
+.creative-dark-table .ant-pagination {
+  background: transparent !important;
+  padding: 12px 0 !important;
+}
+
+.creative-dark-table .ant-pagination-item {
+  background: rgba(20, 20, 43, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 8px !important;
+}
+
+.creative-dark-table .ant-pagination-item a {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.creative-dark-table .ant-pagination-item:hover {
+  border-color: #6c5ce7 !important;
+  background: rgba(108, 92, 231, 0.1) !important;
+}
+
+.creative-dark-table .ant-pagination-item:hover a {
+  color: #6c5ce7 !important;
+}
+
+.creative-dark-table .ant-pagination-item-active {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe) !important;
+  border-color: #6c5ce7 !important;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3) !important;
+}
+
+.creative-dark-table .ant-pagination-item-active a {
+  color: #ffffff !important;
+}
+
+.creative-dark-table .ant-pagination-prev button,
+.creative-dark-table .ant-pagination-next button {
+  color: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 8px !important;
+  background: rgba(20, 20, 43, 0.6) !important;
+}
+
+.creative-dark-table .ant-pagination-prev button:hover,
+.creative-dark-table .ant-pagination-next button:hover {
+  color: #6c5ce7 !important;
+  border-color: #6c5ce7 !important;
+}
+
+.creative-dark-table .ant-pagination-options {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.creative-dark-table .ant-pagination-options .ant-select-selector {
+  background: rgba(20, 20, 43, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+.creative-dark-table .ant-pagination-options .ant-select-selector:hover {
+  border-color: #6c5ce7 !important;
+}
+
+/* Loading state */
+.creative-dark-table .ant-spin-dot-item {
+  background-color: #6c5ce7 !important;
+}
+
+.creative-dark-table .ant-spin-text {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Empty state */
+.creative-dark-table .ant-empty-description {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Selection checkbox */
+.creative-dark-table .ant-checkbox-wrapper {
+  color: #ffffff !important;
+}
+
+.creative-dark-table .ant-checkbox-inner {
+  background: rgba(20, 20, 43, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.creative-dark-table .ant-checkbox-checked .ant-checkbox-inner {
+  background: #6c5ce7 !important;
+  border-color: #6c5ce7 !important;
+}
+
+/* Status dots */
+.creative-dark-table .ant-badge-status-dot {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.creative-dark-table .ant-badge-status-success {
+  background-color: #00b894 !important;
+}
+
+.creative-dark-table .ant-badge-status-warning {
+  background-color: #fdcb6e !important;
+}
+
+/* Animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

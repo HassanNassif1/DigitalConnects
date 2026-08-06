@@ -1,17 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Form, Select, Switch, notification } from "antd";
+import { 
+  Input, 
+  Button, 
+  Form, 
+  Select, 
+  Switch, 
+  notification, 
+  Card, 
+  Typography, 
+  Divider, 
+  Row, 
+  Col, 
+  Space, 
+  Upload, 
+  Avatar, 
+  Spin,
+  Statistic,
+} from "antd";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../SideBar/SideBar";
 import { useDarkMode } from "../DarkMode/DarkModeContext";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles.css"; // Ensure this file contains the animated background CSS
 import countriesData from "../sm_users/countries.json";
-const { TextArea } = Input;
+import { 
+  UserAddOutlined, 
+  ArrowLeftOutlined, 
+  UploadOutlined,
+  SaveOutlined, 
+  DollarOutlined, 
+  CalendarOutlined,
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  GlobalOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
+
+const { Title, Text } = Typography;
 
 function EmployeeForm() {
   const navigate = useNavigate();
+  const { isDarkMode } = useDarkMode();
 
+  // Employee Basic Details
   const [selectedCountry, setSelectedCountry] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [countryPhoneCodes, setCountryPhoneCodes] = useState({});
@@ -21,23 +51,45 @@ function EmployeeForm() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [jobDescription, setJobDecription] = useState([]);
-  const [selectedjobDescription, setSelectedJobDecription] = useState([]);
-  const [selectedAge, setSelectedAge] = useState("");
+  const [jobDescription, setJobDescription] = useState([]);
+  const [selectedJobDescription, setSelectedJobDescription] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedNationality, setSelectedNationality] = useState(null);
-  const [addresses, setAddresses] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([]);
   const [additionalImagePreviews, setAdditionalImagePreviews] = useState([]);
   const [countries, setCountries] = useState([]);
   const [isVerified, setIsVerified] = useState(false);
-  const buttonColor = "rgba(46,49,146,255)";
-  const { isDarkMode } = useDarkMode();
-  const navigateTo = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  // Salary States
+  const [salary, setSalary] = useState("");
+  const [salaryDate, setSalaryDate] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
+  const [service, setService] = useState("");
+
+  // === THEME VARIABLES ===
+  const bgColor = "#0a0a1a";
+  const cardBg = "linear-gradient(145deg, #14142b, #1a1a35)";
+  const textColor = "#ffffff";
+  const borderColor = "rgba(255,255,255,0.06)";
+  const inputBg = "#1a1a35";
+  const accentColor = "#6c5ce7";
+  const secondaryText = "rgba(255,255,255,0.6)";
+  const cardShadow = "0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(108,92,231,0.05)";
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    borderRadius: '8px',
+    background: inputBg,
+    border: `1px solid ${borderColor}`,
+    color: textColor,
+    marginBottom: 8,
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -46,57 +98,26 @@ function EmployeeForm() {
   const fetchJobs = async () => {
     try {
       const response = await axios.get("http://localhost:5000/getjobs");
-      setJobDecription(response.data);
+      setJobDescription(response.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
   };
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-  }, [isDarkMode]);
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
- useEffect(() => {
-   setCountries(countriesData);
-   
-   const phoneCodeMap = countriesData.reduce((acc, country) => {
-     acc[country.name] = country.phoneCode;
-     return acc;
-   }, {});
-   
-   setCountryPhoneCodes(phoneCodeMap);
- }, []);
- 
-
   useEffect(() => {
-    if (selectedNationality) {
-      fetchAddresses(selectedNationality);
-    }
-  }, [selectedNationality]);
+    setCountries(countriesData);
+    const phoneCodeMap = countriesData.reduce((acc, country) => {
+      acc[country.name] = country.phoneCode;
+      return acc;
+    }, {});
+    setCountryPhoneCodes(phoneCodeMap);
+  }, []);
 
-  const fetchAddresses = (country) => {
-    const apiKey = "YOUR_API_KEY"; // Replace with your actual OpenCage API key
-    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${country}&key=${apiKey}`;
-
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const newAddresses = data.results.map((result) => result.formatted);
-        setAddresses(newAddresses);
-      })
-      .catch((error) => console.error("Error fetching addresses:", error));
-  };
-
-  // Updated: Only update selected country and countryCode; do not modify the phoneNumber field.
   const handleCountryChange = (e) => {
     const selected = e.target.value;
     setSelectedCountry(selected);
@@ -106,15 +127,10 @@ function EmployeeForm() {
 
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0];
-
     if (file) {
       setProfileImage(file);
-
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -125,31 +141,24 @@ function EmployeeForm() {
     const previews = files.map((file) => {
       const reader = new FileReader();
       return new Promise((resolve) => {
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
+        reader.onloadend = () => resolve(reader.result);
         reader.readAsDataURL(file);
       });
     });
-    Promise.all(previews).then((previewUrls) => {
-      setAdditionalImagePreviews(previewUrls);
-    });
+    Promise.all(previews).then((previewUrls) => setAdditionalImagePreviews(previewUrls));
   };
 
   const handleSubmit = async () => {
     if (!isValidEmail(email)) {
       setEmailError("Please enter a valid email address.");
-      return; // Prevent further execution if email is invalid
+      return;
     }
 
-    // Remove spaces from phoneNumber on submission
+    setLoading(true);
     const formattedPhoneNumber = phoneNumber.replace(/\s+/g, "");
-
     const formData = new FormData();
     formData.append("username", employeeName);
     formData.append("nationality", selectedNationality);
-
-    // Construct the dateOfBirth from separate month, day, and year
     const dateOfBirth = `${selectedYear}-${selectedMonth.padStart(2, "0")}-${selectedDay.padStart(2, "0")}`;
     formData.append("dateOfBirth", dateOfBirth);
     formData.append("isverified", isVerified);
@@ -158,290 +167,439 @@ function EmployeeForm() {
     formData.append("countrycode", countryCode);
     formData.append("gender", gender);
     formData.append("email", email);
-    formData.append("job_description", selectedjobDescription);
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
-    }
-    additionalImages.forEach((image) => {
-      formData.append("additionalImages", image);
-    });
+    formData.append("job_description", selectedJobDescription);
+    if (profileImage) formData.append("profileImage", profileImage);
+    additionalImages.forEach((image) => formData.append("additionalImages", image));
+    formData.append("salary", salary);
+
     try {
       const response = await axios.post("http://localhost:5000/CreateEmployee", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
+      
+      const newEmployeeId = response.data.id; 
 
-      if (response.data.message === "Employee added successfully!") {
-        notification.success({
-          message: "Success",
-          description: response.data.message,
+      if (salary && newEmployeeId) {
+        await axios.post("http://localhost:5000/api/postsalary", {
+          employee_id: newEmployeeId,
+          job_description: selectedJobDescription,
+          salary: parseFloat(salary),
+          is_paid: isPaid,
+          service: service || "Base Salary",
+          date: salaryDate || new Date().toISOString().split('T')[0],
         });
-        navigateTo("/employees"); // Navigate to /employees page on success
       }
+
+      notification.success({ message: "Success", description: "Employee and Salary added successfully!" });
+      navigate("/employees");
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
+      notification.error({ message: "Error", description: "Failed to add employee or salary." });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-md-3">{/* Sidebar can be placed here if needed */}</div>
-        <div className="col-md-9">
-          <div className="row justify-content-center mt-5">
-            <div className="col-md-10">
-              <h1 className="text-center mb-4">Add Employee</h1>
-              <div className="card card-custom">
-                <div className="card-body card-body-custom">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="form-group row">
-                        <label htmlFor="username" className="col-sm-4 col-form-label">
-                          Employee Name:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="username">
-                            <Input
-                              id="username"
-                              placeholder="Employee Name"
-                              value={employeeName}
-                              onChange={(e) => setEmployeeName(e.target.value)}
-                            />
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="nationality" className="col-sm-4 col-form-label">
-                          Country:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="nationality">
-                            <select
-                              id="nationality"
-                              className="form-select"
-                              value={selectedNationality}
-                              onChange={(e) => {
-                                setSelectedNationality(e.target.value);
-                                handleCountryChange(e);
-                              }}
-                            >
-                              <option value="" disabled>
-                                Select a country
-                              </option>
-                              {countries.map((country) => (
-                                <option key={country.code} value={country.name}>
-                                  {country.name}
-                                </option>
-                              ))}
-                            </select>
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="dob" className="col-sm-4 col-form-label">
-                          Date Of Birth:
-                        </label>
-                        <div className="col-sm-8">
-                          <div className="row">
-                            <div className="col">
-                              <Form.Item name="month">
-                                <Input
-                                  id="month"
-                                  type="number"
-                                  placeholder="Month"
-                                  value={selectedMonth}
-                                  onChange={(e) => setSelectedMonth(e.target.value)}
-                                  min="1"
-                                  max="12"
-                                />
-                              </Form.Item>
-                            </div>
-                            <div className="col">
-                              <Form.Item name="day">
-                                <Input
-                                  id="day"
-                                  type="number"
-                                  placeholder="Day"
-                                  value={selectedDay}
-                                  onChange={(e) => setSelectedDay(e.target.value)}
-                                  min="1"
-                                  max="31"
-                                />
-                              </Form.Item>
-                            </div>
-                            <div className="col">
-                              <Form.Item name="year">
-                                <Input
-                                  id="year"
-                                  type="number"
-                                  placeholder="Year"
-                                  value={selectedYear}
-                                  onChange={(e) => setSelectedYear(e.target.value)}
-                                  min="1900"
-                                  max="2100"
-                                />
-                              </Form.Item>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="email" className="col-sm-4 col-form-label">
-                          Email:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item
-                            name="email"
-                            validateStatus={emailError ? "error" : ""}
-                            help={emailError}
-                          >
-                            <Input
-                              id="email"
-                              placeholder="Email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                            />
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="address" className="col-sm-4 col-form-label">
-                          Address:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="address">
-                            <Input
-                              id="address"
-                              placeholder="Address"
-                              value={address}
-                              onChange={(e) => setAddress(e.target.value)}
-                            />
-                          </Form.Item>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group row">
-                        <label htmlFor="job" className="col-sm-4 col-form-label">
-                          Job Description:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="job">
-                            <Select
-                              id="job"
-                              placeholder="Employee's Job"
-                              onChange={(value) => setSelectedJobDecription(value)}
-                            >
-                              {jobDescription.map((job) => (
-                                <Select.Option key={job.id} value={job.job_description}>
-                                  {job.job_description}
-                                </Select.Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="phonenumber" className="col-sm-4 col-form-label">
-                          Phone Number:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="phonenumber">
-                            <Input
-                              id="phonenumber"
-                              placeholder={`Phone Number (${countryCode})`}
-                              value={phoneNumber}
-                              onChange={(e) => setPhoneNumber(e.target.value)}
-                            />
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="gender" className="col-sm-4 col-form-label">
-                          Gender:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="gender">
-                            <Select
-                              id="gender"
-                              placeholder="Select Gender"
-                              value={gender}
-                              onChange={(value) => setGender(value)}
-                            >
-                              <Select.Option value="male">Male</Select.Option>
-                              <Select.Option value="female">Female</Select.Option>
-                              <Select.Option value="other">Other</Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="profileImage" className="col-sm-4 col-form-label">
-                          Profile Image:
-                        </label>
-                        <div className="col-sm-8 d-flex align-items-center">
-                          <Form.Item name="profileImage" className="mb-0">
-                            <Input type="file" id="profileImage" onChange={handleProfileImageChange} />
-                          </Form.Item>
-                          {imagePreview && (
-                            <img
-                              src={imagePreview}
-                              alt="Selected preview"
-                              style={{
-                                marginLeft: "20px",
-                                width: "100px",
-                                height: "auto",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="additionalImages" className="col-sm-4 col-form-label">
-                          Additional Images:
-                        </label>
-                        <div className="col-sm-8">
-                          <Form.Item name="additionalImages">
-                            <Input type="file" id="additionalImages" multiple onChange={handleAdditionalImagesChange} />
-                          </Form.Item>
-                          <div className="d-flex flex-wrap mt-2">
-                            {additionalImagePreviews.map((preview, index) => (
-                              <img
-                                key={index}
-                                src={preview}
-                                alt={`Additional preview ${index}`}
-                                style={{
-                                  width: "100px",
-                                  height: "auto",
-                                  marginRight: "10px",
-                                  marginBottom: "10px",
-                                  border: "1px solid #ccc",
-                                  borderRadius: "4px",
-                                }}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <div className="col-sm-12 text-center">
-                      <Button type="button" onClick={handleSubmit} style={{ backgroundColor: buttonColor, color: "white" }}>
-                        Submit
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      minHeight: '100vh',
+      background: bgColor,
+      padding: '30px 20px',
+    }}>
+      <div style={{ 
+        width: '100%', 
+        maxWidth: '1400px',
+        margin: '0 auto',
+      }}>
+        
+        {/* Header */}
+        <div style={{ marginBottom: 30 }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 16,
+          }}>
+            <div>
+              <Title level={2} style={{ color: textColor, marginBottom: 4 }}>
+                <TeamOutlined style={{ color: accentColor, marginRight: 12 }} />
+                Add New Employee
+              </Title>
+              <Text style={{ color: secondaryText, fontSize: 15 }}>
+                Register a new employee to the system
+              </Text>
             </div>
+            <Button 
+              icon={<ArrowLeftOutlined />} 
+              onClick={() => navigate('/employees')}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: `1px solid ${borderColor}`,
+                color: textColor,
+                borderRadius: 8,
+              }}
+            >
+              Back to Employees
+            </Button>
           </div>
+          <Divider style={{ borderColor: borderColor }} />
         </div>
+
+        {/* Main Form Card */}
+        <Card style={{ 
+          background: cardBg, 
+          border: `1px solid ${borderColor}`, 
+          borderRadius: 16, 
+          boxShadow: cardShadow,
+          overflow: 'hidden',
+          position: 'relative',
+        }}>
+          <div style={{ 
+            height: "3px", 
+            background: `linear-gradient(90deg, ${accentColor}, #a29bfe, ${accentColor})`, 
+            backgroundSize: "300% 100%", 
+            animation: "gradientMove 4s ease infinite", 
+            position: "absolute", 
+            top: 0, 
+            left: 0, 
+            right: 0 
+          }} />
+
+          <div style={{ padding: '24px' }}>
+            <Form layout="vertical" onFinish={handleSubmit}>
+              <Row gutter={[24, 24]}>
+                {/* Personal Information */}
+                <Col span={24}>
+                  <Title level={4} style={{ color: textColor, marginBottom: 16 }}>
+                    <UserOutlined style={{ color: accentColor, marginRight: 8 }} />
+                    Personal Information
+                  </Title>
+                  <Divider style={{ borderColor: borderColor }} />
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Employee Name</Text>}>
+                    <Input 
+                      placeholder="Full name" 
+                      value={employeeName} 
+                      onChange={(e) => setEmployeeName(e.target.value)} 
+                      prefix={<UserOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Email</Text>}>
+                    <Input 
+                      placeholder="Email address" 
+                      value={email} 
+                      onChange={(e) => setEmail(e.target.value)} 
+                      prefix={<MailOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                    {emailError && <Text style={{ color: "#ff4d4f" }}>{emailError}</Text>}
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Country</Text>}>
+                    <Select 
+                      placeholder="Select Country" 
+                      value={selectedNationality} 
+                      onChange={(val) => { 
+                        setSelectedNationality(val); 
+                        handleCountryChange({ target: { value: val } }); 
+                      }}
+                      dropdownStyle={{ background: inputBg }}
+                      style={{ width: "100%" }}
+                    >
+                      {countries.map((c) => <Select.Option key={c.code} value={c.name}>{c.name}</Select.Option>)}
+                    </Select>
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Phone Number</Text>}>
+                    <Input 
+                      placeholder={`Phone (${countryCode})`} 
+                      value={phoneNumber} 
+                      onChange={(e) => setPhoneNumber(e.target.value)} 
+                      prefix={<PhoneOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Date of Birth</Text>}>
+                    <Space>
+                      <Input 
+                        placeholder="MM" 
+                        type="number" 
+                        min="1" 
+                        max="12" 
+                        value={selectedMonth} 
+                        onChange={(e) => setSelectedMonth(e.target.value)} 
+                        style={{ width: 80, ...inputStyle }} 
+                      />
+                      <Input 
+                        placeholder="DD" 
+                        type="number" 
+                        min="1" 
+                        max="31" 
+                        value={selectedDay} 
+                        onChange={(e) => setSelectedDay(e.target.value)} 
+                        style={{ width: 80, ...inputStyle }} 
+                      />
+                      <Input 
+                        placeholder="YYYY" 
+                        type="number" 
+                        min="1900" 
+                        max="2100" 
+                        value={selectedYear} 
+                        onChange={(e) => setSelectedYear(e.target.value)} 
+                        style={{ width: 100, ...inputStyle }} 
+                      />
+                    </Space>
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Gender</Text>}>
+                    <Select 
+                      placeholder="Gender" 
+                      value={gender} 
+                      onChange={setGender} 
+                      dropdownStyle={{ background: inputBg }} 
+                      style={{ width: "100%" }}
+                    >
+                      <Select.Option value="male">Male</Select.Option>
+                      <Select.Option value="female">Female</Select.Option>
+                      <Select.Option value="other">Other</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Address</Text>}>
+                    <Input 
+                      placeholder="Address" 
+                      value={address} 
+                      onChange={(e) => setAddress(e.target.value)} 
+                      prefix={<GlobalOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                {/* Job Information */}
+                <Col span={24}>
+                  <Title level={4} style={{ color: textColor, marginTop: 16, marginBottom: 16 }}>
+                    <TeamOutlined style={{ color: accentColor, marginRight: 8 }} />
+                    Job Information
+                  </Title>
+                  <Divider style={{ borderColor: borderColor }} />
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Job Description</Text>}>
+                    <Select 
+                      placeholder="Select Job" 
+                      value={selectedJobDescription} 
+                      onChange={setSelectedJobDescription} 
+                      dropdownStyle={{ background: inputBg }} 
+                      style={{ width: "100%" }}
+                    >
+                      {jobDescription.map((job) => <Select.Option key={job.id} value={job.job_description}>{job.job_description}</Select.Option>)}
+                    </Select>
+                  </Form.Item>
+                </Col>
+
+                {/* Salary Details */}
+                <Col span={24}>
+                  <Title level={4} style={{ color: textColor, marginTop: 16, marginBottom: 16 }}>
+                    <DollarOutlined style={{ color: accentColor, marginRight: 8 }} />
+                    Salary Details
+                  </Title>
+                  <Divider style={{ borderColor: borderColor }} />
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Initial Salary ($)</Text>}>
+                    <Input 
+                      type="number" 
+                      placeholder="0.00" 
+                      value={salary} 
+                      onChange={(e) => setSalary(e.target.value)} 
+                      prefix={<DollarOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Salary Date</Text>}>
+                    <Input 
+                      type="date" 
+                      value={salaryDate} 
+                      onChange={(e) => setSalaryDate(e.target.value)} 
+                      prefix={<CalendarOutlined style={{ color: secondaryText }} />}
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Payment Status</Text>}>
+                    <Switch 
+                      checked={isPaid} 
+                      onChange={setIsPaid} 
+                      checkedChildren="Paid" 
+                      unCheckedChildren="Unpaid" 
+                      style={{ background: isPaid ? "#00b894" : "#ff4d4f" }} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Service Note</Text>}>
+                    <Input 
+                      placeholder="E.g. Monthly Base" 
+                      value={service} 
+                      onChange={(e) => setService(e.target.value)} 
+                      style={inputStyle} 
+                    />
+                  </Form.Item>
+                </Col>
+
+                {/* Images */}
+                <Col span={24}>
+                  <Title level={4} style={{ color: textColor, marginTop: 16, marginBottom: 16 }}>
+                    <UploadOutlined style={{ color: accentColor, marginRight: 8 }} />
+                    Images
+                  </Title>
+                  <Divider style={{ borderColor: borderColor }} />
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Profile Image</Text>}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      <Input 
+                        type="file" 
+                        onChange={handleProfileImageChange} 
+                        style={{ ...inputStyle, padding: "6px" }} 
+                      />
+                      {imagePreview && <Avatar size={64} src={imagePreview} shape="square" />}
+                    </div>
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item label={<Text style={{ color: secondaryText }}>Additional Images</Text>}>
+                    <Input 
+                      type="file" 
+                      multiple 
+                      onChange={handleAdditionalImagesChange} 
+                      style={{ ...inputStyle, padding: "6px" }} 
+                    />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                      {additionalImagePreviews.map((img, i) => <Avatar key={i} size={48} src={img} shape="square" />)}
+                    </div>
+                  </Form.Item>
+                </Col>
+
+                {/* Actions */}
+                <Col span={24}>
+                  <Divider style={{ borderColor: borderColor }} />
+                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+                    <Button 
+                      onClick={() => navigate('/employees')}
+                      style={{
+                        background: 'transparent',
+                        border: `1px solid ${borderColor}`,
+                        color: textColor,
+                        borderRadius: 8,
+                        padding: '0 30px',
+                        height: 40,
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="primary" 
+                      htmlType="submit" 
+                      loading={loading} 
+                      icon={<SaveOutlined />}
+                      style={{
+                        background: `linear-gradient(135deg, ${accentColor}, #8b7cf7)`,
+                        border: 'none',
+                        boxShadow: `0 4px 15px ${accentColor}44`,
+                        borderRadius: 8,
+                        padding: '0 30px',
+                        height: 40,
+                      }}
+                    >
+                      Add Employee
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Form>
+          </div>
+        </Card>
       </div>
+
+      <style>{`
+        @keyframes gradientMove { 
+          0% { background-position: 0% 50%; } 
+          50% { background-position: 100% 50%; } 
+          100% { background-position: 0% 50%; } 
+        }
+        
+        .ant-input, .ant-select-selector, .ant-picker {
+          background: ${inputBg} !important;
+          border-color: ${borderColor} !important;
+          color: ${textColor} !important;
+        }
+        .ant-input::placeholder {
+          color: ${secondaryText} !important;
+        }
+        .ant-select-dropdown {
+          background: ${inputBg} !important;
+        }
+        .ant-select-item {
+          color: ${textColor} !important;
+        }
+        .ant-select-item:hover {
+          background: rgba(108,92,231,0.1) !important;
+        }
+        .ant-select-item-option-selected {
+          background: ${accentColor}22 !important;
+        }
+        .ant-picker-input > input {
+          color: ${textColor} !important;
+        }
+        .ant-picker-suffix {
+          color: ${secondaryText} !important;
+        }
+        .ant-form-item-label > label {
+          color: ${secondaryText} !important;
+        }
+        .ant-switch-checked {
+          background: #00b894 !important;
+        }
+        .ant-switch {
+          background: #ff4d4f !important;
+        }
+        input::placeholder {
+          color: ${secondaryText} !important;
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,3 +1,278 @@
-body{
-  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%);
+/* ===== DARK THEME ===== */
+body.dark-theme {
+  background-color: #0a0a1a;
+  color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme .ant-typography {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-card {
+  background: linear-gradient(145deg, #14142b, #1a1a35) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-card .ant-card-head {
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-table {
+  background: transparent !important;
+}
+
+body.dark-theme .ant-table-thead > tr > th {
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-table-tbody > tr > td {
+  background: transparent !important;
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-table-tbody > tr:hover > td {
+  background: rgba(108, 92, 231, 0.04) !important;
+}
+
+body.dark-theme .ant-input {
+  background: #1a1a35 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-theme .ant-select-selector {
+  background: #1a1a35 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-select-selection-item {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-select-arrow {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-theme .ant-modal-content {
+  background: #0a0a1a !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-modal-header {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-modal-title {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-modal-close {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+body.dark-theme .ant-modal-close:hover {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-modal-body {
+  background: transparent !important;
+}
+
+body.dark-theme .ant-pagination-item {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .ant-pagination-item a {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-theme .ant-pagination-item-active {
+  background: #6c5ce7 !important;
+  border-color: #6c5ce7 !important;
+}
+
+body.dark-theme .ant-pagination-item-active a {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-tag {
+  background: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(108, 92, 231, 0.3) !important;
+  color: #a29bfe !important;
+}
+
+body.dark-theme .ant-badge-status-text {
+  color: #ffffff !important;
+}
+
+body.dark-theme .ant-statistic-title {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-theme .ant-statistic-content {
+  color: #ffffff !important;
+}
+
+/* ===== LIGHT THEME ===== */
+body.light-theme {
+  background-color: #f0f2f5;
+  color: #1a1a2e;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.light-theme .ant-typography {
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-card {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-card .ant-card-head {
+  color: #1a1a2e !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-table-thead > tr > th {
+  background: rgba(0, 0, 0, 0.02) !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-table-tbody > tr > td {
+  color: #1a1a2e !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-table-tbody > tr:hover > td {
+  background: rgba(108, 92, 231, 0.04) !important;
+}
+
+body.light-theme .ant-input {
+  background: #f5f5f5 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-input::placeholder {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body.light-theme .ant-select-selector {
+  background: #f5f5f5 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-select-selection-item {
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-select-arrow {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body.light-theme .ant-modal-content {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-modal-header {
+  background: transparent !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-modal-title {
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-modal-close {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+body.light-theme .ant-modal-close:hover {
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-modal-body {
+  background: transparent !important;
+}
+
+body.light-theme .ant-pagination-item {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .ant-pagination-item a {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+body.light-theme .ant-pagination-item-active {
+  background: #6c5ce7 !important;
+  border-color: #6c5ce7 !important;
+}
+
+body.light-theme .ant-pagination-item-active a {
+  color: #ffffff !important;
+}
+
+body.light-theme .ant-tag {
+  background: rgba(108, 92, 231, 0.1) !important;
+  border-color: rgba(108, 92, 231, 0.2) !important;
+  color: #6c5ce7 !important;
+}
+
+body.light-theme .ant-badge-status-text {
+  color: #1a1a2e !important;
+}
+
+body.light-theme .ant-statistic-title {
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+body.light-theme .ant-statistic-content {
+  color: #1a1a2e !important;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-layout {
+  animation: fadeIn 0.3s ease;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(108, 92, 231, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(108, 92, 231, 0.5);
 }

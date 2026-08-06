@@ -1,125 +1,77 @@
-.create-accounting-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  min-height: 100vh;
-  color: #fff;
+/* Create_Accounting.css */
+
+/* Base styles */
+* {
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0;
 }
 
+/* Form Card */
 .form-card {
-  width: 100%;
-  max-width: 100%;
-  min-height: 200vh;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0;
-  padding: 60px 80px; /* more breathing room */
-  box-shadow: none;
-  backdrop-filter: blur(10px);
-  animation: fadeIn 0.6s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
-.form-title {
-  text-align: center;
-  margin-bottom: 50px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: #00c4ff;
-  font-size: 2rem;
-}
-
+/* Grid layout */
 .grid-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* slightly larger fields */
-  gap: 24px 30px;
-  width: 100%;
-  box-sizing: border-box;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.form-field.full-width {
+.grid-form .full-width {
   grid-column: 1 / -1;
 }
 
+/* Form field */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .form-field label {
-  font-size: 15px;
-  font-weight: 600;
-  color: #d5dde5;
-  margin-bottom: 8px;
-  letter-spacing: 0.4px;
-}
-
-/* Increased input & select field sizes */
-.ant-input,
-.ant-select-selector {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  transition: all 0.25s ease-in-out;
-  padding: 12px 14px !important; /* taller input */
-  font-size: 16px !important; /* larger font */
-  height: 48px !important; /* taller field */
-  line-height: 1.6 !important;
-  width: 100% !important;
-  box-sizing: border-box;
-}
-
-.ant-input:focus,
-.ant-select-focused .ant-select-selector {
-  border-color: #00b4ff !important;
-  box-shadow: 0 0 6px #00b4ff;
-}
-
-/* Checkbox area */
-.checkbox-field {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  font-size: 16px;
+  gap: 6px;
 }
 
-.checkbox-field .ant-checkbox + span {
-  color: #d5dde5;
-  font-weight: 500;
+/* Checkbox field */
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 0;
 }
 
-/* Bigger, bolder button */
-.submit-btn {
-  width: 100%;
-  margin-top: 40px;
-  background: linear-gradient(145deg, #00b4ff, #3b66ff) !important;
-  border: none !important;
-  height: 54px;
-  font-size: 16px;
-  font-weight: 700;
-  border-radius: 10px !important;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+.checkbox-field label {
+  margin: 0;
+  cursor: pointer;
 }
 
-.submit-btn:hover {
-  background: linear-gradient(145deg, #0092cc, #324fd6) !important;
+/* Dark mode overrides */
+.dark-mode .ant-select-dropdown {
+  background: #1a1a35 !important;
 }
 
-@keyframes fadeIn {
+.dark-mode .ant-select-item {
+  color: #ffffff !important;
+}
+
+.dark-mode .ant-select-item-option-active {
+  background: rgba(108, 92, 231, 0.1) !important;
+}
+
+.dark-mode .ant-select-item-option-selected {
+  background: rgba(108, 92, 231, 0.15) !important;
+}
+
+/* Animations */
+@keyframes fadeSlideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -127,38 +79,49 @@
   }
 }
 
-/* Responsive layout for smaller screens */
-@media (max-width: 992px) {
-  .form-card {
-    padding: 40px 30px;
-  }
-
-  .form-title {
-    font-size: 1.6rem;
-  }
-
-  .ant-input,
-  .ant-select-selector {
-    font-size: 15px !important;
-    height: 44px !important;
-  }
+.form-card {
+  animation: fadeSlideUp 0.5s ease-out;
 }
 
-@media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 768px) {
   .grid-form {
     grid-template-columns: 1fr;
   }
-
-  .form-card {
-    padding: 30px 20px;
+  
+  .grid-form .full-width {
+    grid-column: 1;
   }
-
-  .form-title {
-    font-size: 1.4rem;
+  
+  .create-accounting-container {
+    padding: 10px !important;
   }
-
-  .submit-btn {
-    font-size: 15px;
-    height: 48px;
+  
+  .form-field label {
+    font-size: 12px;
   }
+  
+  .ant-btn {
+    width: 100%;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(108, 92, 231, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(108, 92, 231, 0.5);
 }

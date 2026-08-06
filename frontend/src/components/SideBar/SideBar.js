@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "./app.css";
-import { Link } from "react-router-dom";
-import digitalconnects from "./digitalconnects.gif";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import digitalconnectsLogo from '../Images/digitalconnects.png';
 import {
   faAdd,
   faEye,
@@ -19,6 +17,16 @@ import {
   faDashboard,
   faHistory,
   faArchive,
+  faClipboardList,
+  faUsersCog,
+  faChartLine,
+  faCog,
+  faBell,
+  faSearch,
+  faFileAlt,
+  faFolderOpen,
+  faBox,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faInstagram,
@@ -28,22 +36,19 @@ import {
   faXTwitter,
   faSnapchat,
 } from "@fortawesome/free-brands-svg-icons";
-import { useDarkMode } from "../DarkMode/DarkModeContext";
 
 function Sidebar() {
-  const { isDarkMode } = useDarkMode();
-  const [sidebarImage, setSidebarImage] = useState(digitalconnects);
-
-  const [openDropdown, setOpenDropdown] = useState(null); // track which dropdown is open
-  const [activePlatform, setActivePlatform] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const location = useLocation();
 
   const platforms = [
-    { id: 1, type: "Instagram" },
-    { id: 2, type: "Facebook" },
-    { id: 3, type: "Tiktok" },
-    { id: 4, type: "Youtube" },
-    { id: 5, type: "X" },
-    { id: 6, type: "Snap" },
+    { id: 1, type: "Instagram", icon: faInstagram, color: "#E4405F" },
+    { id: 2, type: "Facebook", icon: faFacebook, color: "#1877F2" },
+    { id: 3, type: "Tiktok", icon: faTiktok, color: "#000000" },
+    { id: 4, type: "Youtube", icon: faYoutube, color: "#FF0000" },
+    { id: 5, type: "X", icon: faXTwitter, color: "#000000" },
+    { id: 6, type: "Snap", icon: faSnapchat, color: "#FFFC00" },
   ];
 
   const toggleDropdown = (name) => {
@@ -52,237 +57,620 @@ function Sidebar() {
 
   const getPlatformIcon = (type) => {
     switch (type) {
-      case "Instagram":
-        return faInstagram;
-      case "Facebook":
-        return faFacebook;
-      case "Tiktok":
-        return faTiktok;
-      case "Youtube":
-        return faYoutube;
-      case "X":
-        return faXTwitter;
-      case "Snap":
-        return faSnapchat;
-      default:
-        return null;
+      case "Instagram": return faInstagram;
+      case "Facebook": return faFacebook;
+      case "Tiktok": return faTiktok;
+      case "Youtube": return faYoutube;
+      case "X": return faXTwitter;
+      case "Snap": return faSnapchat;
+      default: return null;
     }
   };
 
+  const menuItems = [
+    {
+      id: "Accounting",
+      icon: faMoneyCheck,
+      label: "Accounting",
+      subItems: [
+        { path: "/CreateAccounting", label: "Add Invoice" },
+        { path: "/accounting", label: "View Invoices" },
+        { path: "/AddExpensives", label: "Add Expenses" },
+        { path: "/expensives", label: "View Expenses" },
+      ]
+    },
+    {
+      id: "Recovery",
+      icon: faShield,
+      label: "Recovery",
+      subItems: [
+        { path: "/view-recovered-accounts", label: "View Recovered" },
+        { path: "/AddRecoveredAccount", label: "Add Recovered" },
+      ]
+    },
+    {
+      id: "Tasks",
+      icon: faTasks,
+      label: "Tasks",
+      subItems: [
+        { path: "/CreateTasks", label: "Create Task" },
+        { path: "/viewtasks", label: "View Tasks" },
+      ]
+    },
+    {
+      id: "Clients",
+      icon: faUser,
+      label: "Clients",
+      subItems: [
+        { path: "/Users", label: "View Clients" },
+        { path: "/CreateUser", label: "Add Clients" },
+      ]
+    },
+    {
+      id: "Employees",
+      icon: faUserFriends,
+      label: "Employees",
+      subItems: [
+        { path: "/employees", label: "View Employees" },
+        { path: "/AddEmployees", label: "Add Employees" },
+        { path: "/jobs", label: "Jobs" },
+      ]
+    },
+    {
+      id: "UsersManagement",
+      icon: faUsersCog,
+      label: "Users Management",
+      subItems: [
+        { path: "/UserTypes", label: "User Types" },
+        { path: "/UsersPage", label: "Users" },
+      ]
+    },
+    {
+      id: "Quotations",
+      icon: faPen,
+      label: "Quotations",
+      subItems: [
+        { path: "/CreateQuotation", label: "Create Quote" },
+        { path: "/quotations", label: "View Quotes" },
+      ]
+    },
+    {
+      id: "Platforms",
+      icon: faUserCheck,
+      label: "Platforms",
+      subItems: platforms.map(p => ({
+        path: `/${p.type.toLowerCase()}/view/${p.id}`,
+        label: p.type,
+        icon: getPlatformIcon(p.type),
+        color: p.color
+      }))
+    },
+    {
+      id: "SystemLogs",
+      icon: faClipboardList,
+      label: "System Logs",
+      subItems: [
+        { path: "/SystemLogs", label: "View All Logs" },
+      ]
+    },
+  ];
+
   return (
-    <div className="sidebar-container">
-      <div className="admin-sidebar">
-        {/* Dashboard */}
-        <div className="sidebar-logo">
-          <Link to="/dashboard">
-            <FontAwesomeIcon icon={faDashboard} className="icon-glow" />
-          </Link>
+    <div className="sidebar-wrapper">
+      <nav className="modern-sidebar">
+        
+        {/* ===== BRAND SECTION - COMPACT ===== */}
+        <div className="sidebar-brand">
+          <div className="brand-container">
+            <Link to="/dashboard" className="brand-link">
+              <div className="logo-wrapper">
+                <img 
+                  src={digitalconnectsLogo} 
+                  alt="Digital Connects" 
+                  className="brand-logo"
+                />
+                <div className="brand-badge">v3.0</div>
+              </div>
+              
+              <div className="brand-divider" />
+              
+              <button className="dashboard-main-btn">
+                <FontAwesomeIcon icon={faDashboard} />
+                <span>Dashboard</span>
+              </button>
+            </Link>
+          </div>
         </div>
 
-      
+        {/* ===== MENU - PUSHED UP ===== */}
+        <ul className="sidebar-menu">
+          {menuItems.map((item) => {
+            const isExpanded = openDropdown === item.id;
+            const isHovered = hoveredItem === item.id;
+            
+            return (
+              <li 
+                key={item.id} 
+                className={`menu-group ${isExpanded ? "expanded" : ""}`}
+                onMouseEnter={() => setHoveredItem(item.id)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <div className="menu-header" onClick={() => toggleDropdown(item.id)}>
+                  <div className="header-left">
+                    <div className={`icon-wrapper ${isExpanded ? "active" : ""}`}>
+                      <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                    </div>
+                    <span className="menu-title">{item.label}</span>
+                  </div>
+                  <FontAwesomeIcon 
+                    icon={isExpanded ? faChevronDown : faChevronRight} 
+                    className={`menu-arrow ${isExpanded ? "rotate" : ""}`} 
+                  />
+                </div>
+                
+                <div className={`submenu-container ${isExpanded ? "open" : ""}`}>
+                  <ul className="submenu-list">
+                    {item.subItems.map((subItem, index) => (
+                      <li key={index}>
+                        <Link to={subItem.path} className="submenu-link">
+                          <span className="dot" />
+                          {subItem.icon && (
+                            <FontAwesomeIcon 
+                              icon={subItem.icon} 
+                              className="platform-sub-icon" 
+                              style={subItem.color ? { color: subItem.color } : {}}
+                            />
+                          )}
+                          <span>{subItem.label}</span>
+                          {subItem.label === "View All Logs" && (
+                            <span className="badge-new">New</span>
+                          )}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
 
-<ul className="admin-menu">
-  {/* Accounting */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Accounting")}>
-      <FontAwesomeIcon icon={faMoneyCheck} />
-      <span>Accounting</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Accounting" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Accounting" && (
-      <ul className="dropdown-list">
-        <Link to="/CreateAccounting"><li><FontAwesomeIcon icon={faAdd} /> Add Invoice</li></Link>
-        <Link to="/accounting"><li><FontAwesomeIcon icon={faEye} /> View Invoices</li></Link>
-        <Link to="/AddExpensives"><li><FontAwesomeIcon icon={faAdd} /> Add Expenses</li></Link>
-        <Link to="/expensives"><li><FontAwesomeIcon icon={faEye} /> View Expenses</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Recovery */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Recovery")}>
-      <FontAwesomeIcon icon={faShield} />
-      <span>Recovery</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Recovery" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Recovery" && (
-      <ul className="dropdown-list">
-        <Link to="/view-recovered-accounts"><li><FontAwesomeIcon icon={faEye} /> View Recovered Accounts</li></Link>
-        <Link to="/AddRecoveredAccount"><li><FontAwesomeIcon icon={faAdd} /> Add Recovered Accounts</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* History */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("History")}>
-      <FontAwesomeIcon icon={faArchive} />
-      <span>History</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "History" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "History" && (
-      <ul className="dropdown-list">
-        <Link to="/Invoices_History"><li><FontAwesomeIcon icon={faHistory} /> Invoices</li></Link>
-        <Link to="/Expenses_History"><li><FontAwesomeIcon icon={faHistory} /> Expenses</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Tasks */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Tasks")}>
-      <FontAwesomeIcon icon={faTasks} />
-      <span>Tasks</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Tasks" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Tasks" && (
-      <ul className="dropdown-list">
-        <Link to="/CreateTasks"><li><FontAwesomeIcon icon={faAdd} /> Create Task</li></Link>
-        <Link to="/viewtasks"><li><FontAwesomeIcon icon={faEye} /> View Tasks</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Clients */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Clients")}>
-      <FontAwesomeIcon icon={faUser} />
-      <span>Clients</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Clients" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Clients" && (
-      <ul className="dropdown-list">
-        <Link to="/Users"><li><FontAwesomeIcon icon={faEye} /> View Clients</li></Link>
-        <Link to="/CreateUser"><li><FontAwesomeIcon icon={faAdd} /> Add Clients</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Employees */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Employees")}>
-      <FontAwesomeIcon icon={faUserFriends} />
-      <span>Employees</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Employees" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Employees" && (
-      <ul className="dropdown-list">
-        <Link to="/employees"><li><FontAwesomeIcon icon={faEye} /> View Employees</li></Link>
-        <Link to="/AddEmployees"><li><FontAwesomeIcon icon={faAdd} /> Add Employees</li></Link>
-        <Link to="/jobs"><li><FontAwesomeIcon icon={faTasks} /> Jobs</li></Link>
-        <Link to="/salary"><li><FontAwesomeIcon icon={faMoneyCheck} /> Salary</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Quotations */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Quotations")}>
-      <FontAwesomeIcon icon={faPen} />
-      <span>Quotations</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Quotations" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Quotations" && (
-      <ul className="dropdown-list">
-        <Link to="/CreateQuotation"><li><FontAwesomeIcon icon={faAdd} /> Create Quotation</li></Link>
-        <Link to="/quotations"><li><FontAwesomeIcon icon={faEye} /> View Quotations</li></Link>
-      </ul>
-    )}
-  </li>
-
-  {/* Platforms */}
-  <li className="dropdown">
-    <div className="dropdown-header" onClick={() => toggleDropdown("Platforms")}>
-      <FontAwesomeIcon icon={faUserCheck} />
-      <span>Platforms</span>
-      <FontAwesomeIcon icon={faChevronDown} className={`arrow ${openDropdown === "Platforms" ? "open" : ""}`} />
-    </div>
-    {openDropdown === "Platforms" && (
-      <ul className="dropdown-list">
-        {platforms.map((platform) => (
-          <Link
-            key={platform.id}
-            to={`/${platform.type.toLowerCase()}/view/${platform.id}`}
-            onClick={() => setActivePlatform(platform.type)}
-          >
-            <li>
-              <FontAwesomeIcon icon={getPlatformIcon(platform.type)} /> {platform.type}
-            </li>
-          </Link>
-        ))}
-      </ul>
-    )}
-  </li>
-</ul>
-
-        {/* Footer */}
+        {/* ===== FOOTER SECTION - COMPACT ===== */}
         <div className="sidebar-footer">
-          <Link to="/" className="logout-btn">
-            <FontAwesomeIcon icon={faSignOut} />
-          </Link>
-          <Link to="/Register" className="register-btn">
-            <FontAwesomeIcon icon={faUserCheck} />
-          </Link>
+          <div className="footer-divider" />
+          
+       
         </div>
-      </div>
 
-      {/* Sidebar Styles */}
+      </nav>
+
       <style>{`
-        .sidebar-container { display: flex; min-height: 100vw; }
-        .admin-sidebar { width: 250px; background: linear-gradient(180deg, #030316, #0b0e1a); color: white; display: flex; flex-direction: column; padding: 20px 15px; box-shadow: 5px 0 15px rgba(0,0,0,0.3);}
-        .sidebar-logo { text-align: center; margin-bottom: 30px; }
-        .icon-glow { font-size: 28px; color: #00b4ff; transition: 0.3s; }
-        .icon-glow:hover { color: #66d9ff; text-shadow: 0 0 15px #00b4ff; transform: scale(1.1); }
-      
-/* Container for each dropdown block */
-/* Container for each dropdown block */
-.dropdown {
-  background: rgba(255, 255, 255, 0.05); /* grey, semi-transparent */
-  border-radius: 12px; /* rounded corners */
-  padding: 16px; /* inner spacing */
-  margin-bottom: 20px; /* spacing between dropdown boxes */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25); /* subtle depth */
-  width: 100%; /* make box full width of sidebar */
-  box-sizing: border-box; /* include padding in width */
-  transition: all 0.3s ease;
-}
+        /* ===== SIDEBAR WRAPPER ===== */
+        .sidebar-wrapper {
+          display: flex;
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          z-index: 1000;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-/* Header inside the box */
-.dropdown-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  color: #00b4ff;
-  padding: 12px 16px; /* internal padding */
-  border-radius: 8px; /* header slightly rounded */
-  width: 100%; /* header takes full width of the grey box */
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
+        .modern-sidebar {
+          width: 280px;
+          height: 100%;
+          background: linear-gradient(180deg, #07070f 0%, #0c0e1e 40%, #05050d 100%);
+          color: #d1d5db;
+          display: flex;
+          flex-direction: column;
+          padding: 12px 16px 16px 16px;
+          border-right: 1px solid rgba(255, 255, 255, 0.03);
+          box-shadow: 4px 0 40px rgba(0, 0, 0, 0.9), inset -1px 0 0 rgba(255, 255, 255, 0.02);
+          overflow-y: auto;
+          box-sizing: border-box;
+          transition: width 0.3s ease;
+          position: relative;
+        }
 
-.dropdown-header:hover {
-  color: #66d9ff;
-  background: rgba(255, 255, 255, 0.12); /* hover effect */
-  transform: scale(1.02);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
-}
+        /* ===== SCROLLBAR ===== */
+        .modern-sidebar::-webkit-scrollbar { width: 3px; }
+        .modern-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .modern-sidebar::-webkit-scrollbar-thumb { 
+          background: linear-gradient(180deg, #6c5ce7, #a29bfe); 
+          border-radius: 10px; 
+        }
 
+        /* ===== BRAND SECTION - COMPACT ===== */
+        .sidebar-brand { 
+          margin-bottom: 12px; 
+          padding-bottom: 10px; 
+          border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+          flex-shrink: 0;
+        }
 
+        .brand-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
 
-        .dropdown-list { margin-top: 10px; margin-left: 15px; display: flex; flex-direction: column; gap: 6px; animation: fadeIn 0.2s ease-in-out; }
-        .dropdown-list li { background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 8px; transition: 0.3s; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .dropdown-list li:hover { background: rgba(0,180,255,0.2); transform: translateX(4px); color: #00b4ff; }
-        .dropdown-list a { text-decoration: none; color: white;font:25px }
-        .sidebar-footer { margin-top: auto; display: flex; justify-content: space-around; padding-top: 20px; }
-        .logout-btn, .register-btn { font-size: 20px; transition: 0.3s; }
-        .logout-btn:hover { color: #ff4d4f; transform: scale(1.1); }
-        .register-btn:hover { color: #00ff99; transform: scale(1.1); }
+        .brand-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          text-decoration: none;
+          width: 100%;
+        }
 
-        @keyframes fadeIn { from {opacity:0; transform: translateY(-5px);} to {opacity:1; transform: translateY(0);} }
+        .logo-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+        }
+
+        .brand-logo {
+          height: 200px;
+          width: auto;
+          object-fit: contain;
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          filter: drop-shadow(0 0 20px rgba(108, 92, 231, 0.12));
+        }
+
+        .brand-logo:hover {
+          transform: scale(1.05);
+        }
+
+        .brand-badge {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+          background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+          color: white;
+          font-size: 8px;
+          font-weight: 700;
+          padding: 2px 8px;
+          border-radius: 12px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 10px rgba(108, 92, 231, 0.4);
+        }
+
+        .brand-divider {
+          width: 50%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.25), transparent);
+          margin: 0;
+        }
+
+        /* ===== DASHBOARD BUTTON - COMPACT ===== */
+        .dashboard-main-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 6px 20px;
+          border-radius: 30px;
+          background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(162, 155, 254, 0.05));
+          border: 1px solid rgba(108, 92, 231, 0.2);
+          color: #c4b5fd;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          width: 100%;
+          max-width: 140px;
+          font-family: inherit;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .dashboard-main-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+          transition: left 0.5s ease;
+        }
+
+        .dashboard-main-btn:hover::before {
+          left: 100%;
+        }
+
+        .dashboard-main-btn:hover {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
+          background: linear-gradient(135deg, #6c5ce7, #5a4bd1);
+          color: #ffffff;
+          border-color: transparent;
+        }
+
+        .dashboard-main-btn:hover svg {
+          color: #ffffff !important;
+        }
+
+        .dashboard-main-btn:active {
+          transform: scale(0.95);
+        }
+
+        /* ===== MENU - PUSHED UP ===== */
+        .sidebar-menu { 
+          list-style: none; 
+          padding: 0; 
+          margin: 0; 
+          display: flex; 
+          flex-direction: column; 
+          gap: 1px; 
+          flex: 1;
+          overflow-y: auto;
+          padding-top: 2px;
+        }
+        
+        .menu-group {
+          background: transparent;
+          border-radius: 10px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          overflow: hidden;
+          position: relative;
+        }
+
+        .menu-group::before {
+          content: ''; 
+          position: absolute; 
+          left: 0; 
+          top: 50%;
+          transform: translateY(-50%);
+          height: 0%;
+          width: 3px;
+          background: linear-gradient(180deg, #6c5ce7, #a29bfe);
+          border-radius: 0 4px 4px 0; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          opacity: 0;
+        }
+
+        .menu-group.expanded::before, 
+        .menu-group:hover::before { 
+          height: 60%;
+          opacity: 1;
+        }
+
+        .menu-group.expanded { 
+          background: rgba(108, 92, 231, 0.04); 
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02); 
+        }
+
+        .menu-header {
+          display: flex; 
+          align-items: center; 
+          justify-content: space-between;
+          padding: 6px 12px 6px 10px; 
+          cursor: pointer;
+          font-size: 12.5px; 
+          font-weight: 500; 
+          color: #9ca3af;
+          transition: all 0.3s ease;
+          border-radius: 8px;
+          position: relative;
+        }
+
+        .menu-header:hover { 
+          color: #e2e8f0; 
+          background: rgba(255, 255, 255, 0.02);
+        }
+
+        .header-left { 
+          display: flex; 
+          align-items: center; 
+          gap: 10px; 
+        }
+
+        .icon-wrapper {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 6px;
+          background: rgba(255, 255, 255, 0.02);
+          transition: all 0.3s ease;
+        }
+
+        .icon-wrapper.active {
+          background: rgba(108, 92, 231, 0.15);
+        }
+
+        .menu-icon { 
+          font-size: 13px; 
+          color: #6c5ce7; 
+          transition: all 0.3s ease;
+        }
+
+        .menu-group.expanded .menu-icon { 
+          color: #a29bfe; 
+        }
+
+        .menu-title {
+          transition: color 0.3s ease;
+          font-size: 12.5px;
+        }
+
+        .menu-group.expanded .menu-title {
+          color: #e2e8f0;
+        }
+
+        .menu-arrow { 
+          font-size: 9px; 
+          color: #4b5563; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+
+        .menu-arrow.rotate { 
+          transform: rotate(90deg); 
+          color: #a29bfe; 
+        }
+
+        /* ===== SUBMENU - COMPACT ===== */
+        .submenu-container {
+          max-height: 0; 
+          opacity: 0;
+          transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+          overflow: hidden;
+        }
+
+        .submenu-container.open { 
+          max-height: 400px; 
+          opacity: 1; 
+        }
+        
+        .submenu-list {
+          list-style: none; 
+          padding: 0 8px 6px 14px; 
+          margin: 0;
+          display: flex; 
+          flex-direction: column; 
+          gap: 1px;
+        }
+
+        .submenu-link {
+          display: flex; 
+          align-items: center; 
+          gap: 8px;
+          padding: 5px 10px; 
+          border-radius: 6px;
+          color: #9ca3af; 
+          text-decoration: none; 
+          font-size: 12px; 
+          font-weight: 400;
+          transition: all 0.25s ease;
+          position: relative;
+        }
+
+        .submenu-link:hover {
+          background: rgba(108, 92, 231, 0.08);
+          color: #f3f4f6;
+          transform: translateX(3px);
+        }
+
+        .submenu-link .dot {
+          width: 3px; 
+          height: 3px; 
+          border-radius: 50%;
+          background: #4b5563; 
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+        }
+
+        .submenu-link:hover .dot { 
+          background: #6c5ce7; 
+          box-shadow: 0 0 12px rgba(108, 92, 231, 0.6); 
+        }
+        
+        .platform-sub-icon { 
+          font-size: 13px; 
+          width: 14px; 
+          text-align: center; 
+          flex-shrink: 0;
+        }
+
+        .badge-new {
+          margin-left: auto;
+          background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+          color: white;
+          font-size: 7px;
+          font-weight: 700;
+          padding: 2px 6px;
+          border-radius: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        /* ===== FOOTER - COMPACT ===== */
+        .sidebar-footer {
+          margin-top: auto; 
+          padding-top: 10px;
+          display: flex; 
+          flex-direction: column; 
+          gap: 8px;
+          flex-shrink: 0;
+        }
+
+        .footer-divider {
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+        }
+
+        .footer-actions {
+          display: flex;
+          gap: 6px;
+        }
+
+        .footer-btn {
+          flex: 1;
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          gap: 6px;
+          padding: 6px 10px; 
+          border-radius: 8px; 
+          text-decoration: none;
+          font-size: 11px; 
+          font-weight: 500;
+          background: rgba(255, 255, 255, 0.02); 
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          color: #9ca3af; 
+          transition: all 0.3s ease;
+        }
+
+        .footer-btn:hover {
+          transform: translateY(-1px);
+        }
+
+        .footer-btn.logout:hover { 
+          color: #f87171; 
+          background: rgba(239, 68, 68, 0.08); 
+          border-color: rgba(239, 68, 68, 0.2); 
+        }
+
+        .footer-btn.register:hover { 
+          color: #34d399; 
+          background: rgba(16, 185, 129, 0.08); 
+          border-color: rgba(16, 185, 129, 0.2); 
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+          .modern-sidebar { width: 72px; padding: 12px 8px; }
+          .brand-text, .menu-title, .menu-arrow, .footer-btn span, .search-input, .stat-label, .brand-badge { display: none; }
+          .menu-header { padding: 8px 6px; justify-content: center; }
+          .header-left { gap: 0; }
+          .icon-wrapper { width: 30px; height: 30px; }
+          .menu-icon { margin: 0; font-size: 14px; }
+          .dashboard-main-btn { max-width: 36px !important; padding: 6px !important; border-radius: 50% !important; }
+          .dashboard-main-btn span { display: none; }
+          .search-container { display: none; }
+          .submenu-container.open {
+            position: absolute; 
+            left: 72px; 
+            top: -10px;
+            background: #0c0e1e; 
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 0 12px 12px 0; 
+            padding: 10px; 
+            width: 200px;
+            box-shadow: 8px 10px 30px rgba(0,0,0,0.9);
+            max-height: 400px; 
+            z-index: 100;
+          }
+          .menu-group { position: relative; }
+          .footer-actions { flex-direction: column; }
+          .footer-btn { padding: 6px; }
+          .brand-logo { height: 35px !important; }
+        }
       `}</style>
     </div>
   );

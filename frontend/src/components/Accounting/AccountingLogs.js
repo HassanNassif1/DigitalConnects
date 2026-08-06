@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Table, Spin, message, Empty, Select, Input, Card, Typography } from "antd";
+import { Table, Spin, message, Empty, Select, Input, Card, Typography, Tag, Space, Button } from "antd";
 import axios from "axios";
+import { 
+  FileTextOutlined, 
+  SearchOutlined, 
+  HistoryOutlined, 
+  ReloadOutlined,
+  ClockCircleOutlined,
+  UserOutlined
+} from "@ant-design/icons";
 
 const { Option } = Select;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const AccountingLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -11,6 +19,14 @@ const AccountingLogs = () => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [search, setSearch] = useState("");
+
+  // === UNIFIED DARK THEME VARIABLES ===
+  const bgColor = "#0b0b16";
+  const cardBg = "#141426";
+  const textColor = "#ffffff";
+  const borderColor = "rgba(255, 255, 255, 0.08)";
+  const inputBg = "#1a1a2e";
+  const accentColor = "#6c5ce7";
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -49,26 +65,44 @@ const AccountingLogs = () => {
   }, [selectedAccount]);
 
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id", width: 70 },
+    { 
+      title: "ID", 
+      dataIndex: "id", 
+      key: "id", 
+      width: 70,
+      render: (text) => <Tag style={{ background: inputBg, color: textColor, borderColor: borderColor }}>#{text}</Tag>
+    },
     { title: "Accounting ID", dataIndex: "accounting_id", key: "accounting_id" },
     { title: "Field", dataIndex: "field_name", key: "field_name" },
-    { title: "Old Value", dataIndex: "old_value", key: "old_value" },
-    { title: "New Value", dataIndex: "new_value", key: "new_value" },
+    { 
+      title: "Old Value", 
+      dataIndex: "old_value", 
+      key: "old_value",
+      render: (text) => <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>{text || "-"}</span>
+    },
+    { 
+      title: "New Value", 
+      dataIndex: "new_value", 
+      key: "new_value",
+      render: (text) => <span style={{ color: accentColor, fontWeight: 600 }}>{text || "-"}</span>
+    },
     { title: "Comment", dataIndex: "comment", key: "comment" },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
       render: (text) =>
-        text
-          ? new Date(text).toLocaleString("en-US", {
+        text ? (
+          <Tag icon={<ClockCircleOutlined />} color="purple" style={{ color: '#fff', background: `${accentColor}44`, border: 'none' }}>
+            {new Date(text).toLocaleString("en-US", {
               year: "numeric",
               month: "short",
               day: "2-digit",
               hour: "2-digit",
               minute: "2-digit",
-            })
-          : "-",
+            })}
+          </Tag>
+        ) : "-",
     },
   ];
 
@@ -80,165 +114,271 @@ const AccountingLogs = () => {
 
   return (
     <div
-     style={{
-        minHeight: "100vh",
-        padding: "40px 20px",
-        background: "linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%)",
+      style={{
+        height: "100%",
+        width: "100%",
+        background: bgColor,
         display: "flex",
         justifyContent: "center",
+        alignItems: "flex-start",
+        padding: "0", /* Removed padding to fill 100% of parent */
+        margin: "0", /* Removed margin to fill 100% of parent */
+        boxSizing: "border-box",
       }}
     >
       <Card
-          style={{
+        style={{
           width: "100%",
-        
-          borderRadius: "20px",
-         boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5), 0 0 40px rgba(198, 207, 242, 0.53)", // soft blue glow
-          backgroundColor: "#0b0e1a",
-          padding: "20px 25px",
+          height: "100%",
+          borderRadius: "0", /* Removed border-radius to fill flush to edges */
+          background: `linear-gradient(145deg, ${cardBg}, #101025)`,
+          padding: "30px",
+          border: "none", /* Removed border since it touches the wrapper */
+          boxShadow: "none",
+          display: "flex",
+          flexDirection: "column",
         }}
         bordered={false}
+        bodyStyle={{ padding: 0, flex: 1, display: 'flex', flexDirection: 'column' }}
       >
-        <Title
-          level={3}
-          style={{
-            color: "#ffffff",
-            textAlign: "center",
-            marginBottom: "25px",
-            fontWeight: "700",
-            letterSpacing: "0.5px",
-          }}
-        >
-          Accounting Logs
-        </Title>
+        {/* ===== CREATIVE HEADER ===== */}
+        <div style={{ 
+          marginBottom: "28px", 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center", 
+          paddingBottom: "20px", 
+          borderBottom: `1px solid ${borderColor}`,
+          flexWrap: "wrap",
+          gap: 16
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ 
+              width: 48, height: 48, 
+              borderRadius: 14, 
+              background: `linear-gradient(135deg, ${accentColor}22, ${accentColor}11)`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              border: `1px solid ${accentColor}33`,
+              fontSize: 22, color: accentColor
+            }}>
+              <HistoryOutlined />
+            </div>
+            <div>
+              <Title level={3} style={{ color: textColor, margin: 0, fontWeight: 700 }}>
+                Accounting Audit Logs
+              </Title>
+              <Space size={4}>
+                <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>
+                  <FileTextOutlined style={{ marginRight: 6 }} /> 
+                  {filteredLogs.length} records found
+                </Text>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: accentColor }} />
+                <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>
+                  {selectedAccount ? `Tracking: ${selectedAccount.username}` : 'No account selected'}
+                </Text>
+              </Space>
+            </div>
+          </div>
+          
+          <Button 
+            icon={<ReloadOutlined />} 
+            onClick={() => window.location.reload()}
+            style={{ 
+              background: 'rgba(255,255,255,0.03)', 
+              border: `1px solid ${borderColor}`, 
+              color: textColor,
+              borderRadius: 10,
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Refresh
+          </Button>
+        </div>
 
+        {/* ===== CONTROLS PANEL ===== */}
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
             gap: "20px",
-            marginBottom: "25px",
+            marginBottom: "24px",
           }}
         >
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
-            <div style={{ flex: 1, minWidth: "260px" }}>
-              <label style={{ color: "white", marginBottom: "5px", display: "block" }}>
-                Select Accounting ID / Username
-              </label>
-              <Select
-                showSearch
-                placeholder="Select Account"
-                optionFilterProp="children"
-                dropdownStyle={{ backgroundColor: "#0a0f1f", color: "#ffffff" }}
-                style={{ width: "100%" }}
-                onChange={(value) => {
-                  const account = accounts.find((a) => a.id === value);
-                  setSelectedAccount(account);
-                }}
-              >
-                {accounts.map((acc) => (
-                  <Option key={acc.id} value={acc.id} style={{ color: "#ffffff" }}>
-                    {acc.id} — {acc.username}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+          <div style={{ background: inputBg, borderRadius: 12, padding: "14px 18px", border: `1px solid ${borderColor}` }}>
+            <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, display: "block", marginBottom: 6 }}>
+              <UserOutlined style={{ marginRight: 6, color: accentColor }} />
+              Select Account
+            </label>
+            <Select
+              showSearch
+              placeholder="Choose an account to audit..."
+              optionFilterProp="children"
+              dropdownStyle={{ backgroundColor: inputBg, color: textColor }}
+              style={{ width: "100%" }}
+              size="large"
+              onChange={(value) => {
+                const account = accounts.find((a) => a.id === value);
+                setSelectedAccount(account);
+              }}
+            >
+              {accounts.map((acc) => (
+                <Option key={acc.id} value={acc.id} style={{ color: textColor }}>
+                  <Space>
+                    <Tag style={{ background: accentColor, color: '#fff', border: 'none' }}>{acc.id}</Tag>
+                    {acc.username}
+                  </Space>
+                </Option>
+              ))}
+            </Select>
+          </div>
 
-            <div style={{ flex: 1, minWidth: "260px" }}>
-              <label style={{ color: "white", marginBottom: "5px", display: "block" }}>
-                Search Logs
-              </label>
-              <Input
-                placeholder="Search by field or comment"
-                style={{ width: "100%", color: "#ffffff" }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+          <div style={{ background: inputBg, borderRadius: 12, padding: "14px 18px", border: `1px solid ${borderColor}` }}>
+            <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, display: "block", marginBottom: 6 }}>
+              <SearchOutlined style={{ marginRight: 6, color: accentColor }} />
+              Search Audit Trail
+            </label>
+            <Input
+              placeholder="Filter by field, comment, or value..."
+              size="large"
+              style={{ 
+                width: "100%", 
+                color: textColor, 
+                background: 'transparent', 
+                border: 'none',
+                padding: 0
+              }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
         </div>
 
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "50px" }}>
-            <Spin tip="Loading logs..." size="large" />
-          </div>
-        ) : filteredLogs.length === 0 ? (
-          <Empty description="No logs found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <Table
-              rowKey="id"
-              columns={columns}
-              dataSource={filteredLogs}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: false,
-                position: ["bottomCenter"],
-              }}
-              bordered
-              size="middle"
-              className="dark-table"
-            />
-          </div>
-        )}
+        {/* ===== TABLE AREA ===== */}
+        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          {loading ? (
+            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Spin tip="Decrypting audit logs..." size="large" style={{ color: textColor }} />
+            </div>
+          ) : filteredLogs.length === 0 ? (
+            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Empty 
+                description={
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    {selectedAccount ? "No audit logs found for this account." : "Select an account to view its logs."}
+                  </span>
+                } 
+                image={Empty.PRESENTED_IMAGE_SIMPLE} 
+              />
+            </div>
+          ) : (
+            <div style={{ overflowX: "auto", flex: 1 }}>
+              <Table
+                rowKey="id"
+                columns={columns}
+                dataSource={filteredLogs}
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: false,
+                  position: ["bottomCenter"],
+                  style: { color: textColor, marginTop: 16 },
+                }}
+                size="middle"
+                className="dark-table"
+                style={{ flex: 1 }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* ===== FOOTER ===== */}
+        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: `1px solid ${borderColor}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Text style={{ color: 'rgba(255,255,255,0.2)', fontSize: 11 }}>
+            System v2.0 • Encrypted Audit Trail
+          </Text>
+          {selectedAccount && (
+            <Tag color="purple" style={{ background: `${accentColor}22`, border: `1px solid ${accentColor}44`, color: textColor }}>
+              Currently viewing Account #{selectedAccount.id}
+            </Tag>
+          )}
+        </div>
       </Card>
 
       <style>{`
         .dark-table .ant-table {
-          background-color: #0b0e1a !important;
-          color: #ffffff !important;
+          background-color: transparent !important;
+          color: ${textColor} !important;
         }
-            .dark-table .ant-table-container {
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
-    border-bottom: none !important;
-  }
-
+        .dark-table .ant-table-container {
+          border: none !important;
+        }
         .dark-table .ant-table-thead > tr > th {
-          background-color: #071028 !important;
-          color: #ffffff !important;
+          background-color: transparent !important;
+          color: ${textColor} !important;
           font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+          border-bottom: 1px solid ${borderColor} !important;
         }
         .dark-table .ant-table-tbody > tr > td {
-          background-color: #0b0e1a !important;
-          color: #d4d8e3 !important;
-          border-color: #1e223a !important;
+          background-color: transparent !important;
+          color: ${textColor} !important;
+          border-bottom: 1px solid ${borderColor} !important;
         }
         .dark-table .ant-table-tbody > tr:hover > td {
-          background-color: #162044 !important;
-          color: #ffffff !important;
-          transition: all 0.2s ease-in-out;
+          background-color: rgba(108, 92, 231, 0.08) !important;
+          color: ${textColor} !important;
         }
+        
         .ant-select-selector {
-          background-color: #0a0f1f !important;
-          color: #ffffff !important;
-          border: 1px solid #1e223a !important;
+          background-color: transparent !important;
+          color: ${textColor} !important;
+          border: none !important;
           border-radius: 8px !important;
+          box-shadow: none !important;
+        }
+        .ant-select-selection-item {
+          color: ${textColor} !important;
+        }
+        .ant-select-arrow {
+          color: ${textColor} !important;
         }
         .ant-input {
-          background-color: #0a0f1f !important;
-          color: #ffffff !important;
-          border: 1px solid #1e223a !important;
+          background-color: transparent !important;
+          color: ${textColor} !important;
+          border: none !important;
           border-radius: 8px !important;
+          box-shadow: none !important;
         }
-        .ant-empty-description {
+        .ant-input::placeholder {
+          color: rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .ant-pagination-item a {
+          color: ${textColor} !important;
+        }
+        .ant-pagination-item-active {
+          background-color: ${accentColor} !important;
+          border-color: ${accentColor} !important;
+        }
+        .ant-pagination-item-active a {
           color: #ffffff !important;
+        }
+        .ant-pagination-prev button,
+        .ant-pagination-next button {
+          color: ${textColor} !important;
+        }
+        .ant-pagination-item-ellipsis {
+          color: ${textColor} !important;
         }
 
-        /* Responsive design */
+        .ant-empty-description {
+          color: ${textColor} !important;
+        }
+
         @media (max-width: 768px) {
-          .ant-card {
-            padding: 15px !important;
+          div[style*="gridTemplateColumns"] {
+            grid-template-columns: 1fr !important;
           }
           .ant-table {
             font-size: 12px !important;
-          }
-          .ant-input,
-          .ant-select-selector {
-            font-size: 13px !important;
           }
           h3 {
             font-size: 18px !important;

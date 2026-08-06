@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import { DarkModeProvider } from './components/DarkMode/DarkModeContext';
 import { ReminderProvider } from './components/Reminder/ReminderContext';
 import { UserProvider} from './components/UserRights/UserContext';
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,346 +1,43 @@
-:root {
-  --bg: #071028;
-  --card: #0d1422;
-  --glass: rgba(255,255,255,0.04);
-  --accent1: #2E3192;
-  --accent2: #1FBf7A;
-  --text: #e9eef8;
-  --muted: #9aa6d1;
- 
+/* Dashboard.css */
+.dashboard-container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  
+/* Card glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-body {
-  background: linear-gradient(180deg, #030316 0%, #071028 40%, #0b0e1a 100%);
-  color: var(--text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
- 
-   overflow-x: scroll;
-}
-
-/* Dashboard Root */
-.dashboard-root {
-  margin-left: 4%;
+/* Chart container styles */
+.chart-body {
+  position: relative;
   width: 100%;
-  max-width: 1600px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Header */
-.dash-header {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.header-left .brand {
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-}
-
-.header-left .subtitle {
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 6px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* KPI Cards */
-.kpi-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
-}
-
-.card {
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--card);
-  color: var(--text);
-  box-shadow: 0 8px 30px rgba(3,6,24,0.6);
-  display: flex;
-  flex-direction: column;
-}
-
-.card-animated {
-  transition: transform .28s ease, box-shadow .28s ease;
-}
-.card-animated:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-}
-
-.card-top, .card-top1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-title {
-  font-weight: 600;
-  color: white;
-}
-
-.card-icon {
-  font-size: 20px;
-}
-
-.card-body {
-  margin-top: 10px;
-}
-
-.card-number, .card-number1 {
-  font-size: 24px;
-  font-weight: 800;
-  color: white;
-}
-
-.card-note {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* Charts Grid */
-.charts-grid {
-  display: grid;
-  margin-top:3%;
-  grid-template-columns: 2fr 1fr;
-  gap: 18px;
-}
-
-/* Responsive charts container */
-.chart-card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 16px;
-  min-height: 300px;
-  width: 100%;
-}
-
-.charts-flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.flex-chart {
-  flex: 1;
-  min-width: 300px;
-}
-
-/* Side column */
-.side-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.top-scorers h4, .tasks h4 {
-  margin-bottom: 10px;
-}
-
-.scorers-list {
-  max-height: 220px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.scorer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: 8px;
-  background: var(--glass);
-}
-
-.scorer-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.scorer-info {
-  flex: 1;
-}
-
-.scorer-rank {
-  background: var(--accent1);
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-weight: 700;
-  color: #fff;
-}
-
-/* Tasks */
-.task-stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.task-count .big {
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.task-count .success {
-  color: var(--accent2);
-}
-
-.progress-bar {
-  background: rgba(255,255,255,0.1);
-  height: 10px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.progress-fill {
   height: 100%;
-  background: var(--accent1);
-  transition: width .6s ease;
 }
 
-.progress-meta {
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--muted);
+.worldmap-container {
+  min-height: 320px;
 }
 
-.btn.view-tasks {
-  margin-top: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: var(--accent1);
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-  width: 100%;
-}
-
-/* Footer */
-.dash-footer {
-  text-align: center;
-  margin-top: 28px;
-  color: #6f7da6;
-  font-size: 13px;
-}
-
-/* Responsive Fixes */
-@media (max-width: 1200px) {
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .dashboard-root {
-    margin-left: 0;
-    padding: 12px;
+  .dashboard-container {
+    padding: 12px !important;
   }
-
-  .dash-header {
-    flex-direction: column;
-    align-items: flex-start;
+  
+  .ant-card {
+    margin-bottom: 12px;
+  }
+  
+  .stat-number {
+    font-size: 22px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .kpi-cards {
-    grid-template-columns: 1fr;
+  .ant-col {
+    padding: 0 8px !important;
   }
-
-  .chart-body {
-    height: 250px !important;
-  }
-}
-/* 🌍 World Map Section */
-.worldmap-section {
-  background: linear-gradient(145deg, #0b0f24, #121835);
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.worldmap-section:hover {
-  transform: scale(1.01);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-}
-
-.worldmap-container {
-  width: 100%;
-  margin-top:2%;
-  overflow-x: auto; /* optional, in case it overflows on small screens */
-}
-
-
-/* Header and subtitle styling */
-.chart-header h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #e3e8ff;
-  margin-bottom: 6px;
-}
-
-.chart-subtitle {
-  font-size: 13px;
-  color: #9da8c4;
-  margin-bottom: 14px;
-}
-
-/* Tooltip inside WorldMap */
-.worldmap-tooltip {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 16px 20px;
-  font-family: "Inter", sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #1a1a1a;
-  min-width: 180px;
-  transition: all 0.3s ease;
-}
-
-.worldmap-tooltip ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 10px;
-}
-
-.worldmap-tooltip li {
-  opacity: 0;
-  animation: fadeIn 0.3s ease forwards;
-  margin-bottom: 6px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
 }

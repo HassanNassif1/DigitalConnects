@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button, notification, Tooltip } from "antd";
+import { Table, Input, Button, notification, Tooltip, Card, Typography, Space, Tag } from "antd";
 import {
   FilePdfOutlined,
   FileExcelOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./quotation.css";
 import { useDarkMode } from "../DarkMode/DarkModeContext";
-import Sidebar from "../../components/SideBar/SideBar";
 import html2pdf from "html2pdf.js";
 import ExcelJS from "exceljs";
 import digitalconnects from "./digitalconnects.jpg";
@@ -17,12 +18,22 @@ import { useNavigate } from "react-router-dom";
 import AnimatePhoto from "../Images/AnimatePhoto";
 
 const { Search } = Input;
+const { Title, Text } = Typography;
 
 const View_Quotation = () => {
   let navigate = useNavigate();
   const [data, setData] = useState([]);
   const { isDarkMode } = useDarkMode();
   const [searchText, setSearchText] = useState("");
+
+  // === UNIFIED DARK THEME VARIABLES ===
+  const bgColor = "#0a0a1a";
+  const cardBg = "linear-gradient(145deg, #14142b, #1a1a35)";
+  const textColor = "#ffffff";
+  const borderColor = "rgba(255, 255, 255, 0.06)";
+  const inputBg = "#1a1a35";
+  const accentColor = "#6c5ce7";
+  const secondaryText = "rgba(255, 255, 255, 0.7)";
 
   const fetchData = () => {
     axios
@@ -256,9 +267,23 @@ const View_Quotation = () => {
     });
   };
 
+  const filteredData = data.filter((item) =>
+    item.username?.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const columns = [
-    { title: "Client Name", dataIndex: "username", key: "username" },
-    { title: "Phone Number", dataIndex: "phone_number", key: "phone_number" },
+    { 
+      title: "Client Name", 
+      dataIndex: "username", 
+      key: "username",
+      render: (text) => <span style={{ color: textColor, fontWeight: 500 }}>{text}</span>
+    },
+    { 
+      title: "Phone Number", 
+      dataIndex: "phone_number", 
+      key: "phone_number",
+      render: (text) => <span style={{ color: textColor }}>{text}</span>
+    },
     {
       title: "Package",
       dataIndex: "type",
@@ -268,7 +293,7 @@ const View_Quotation = () => {
         return (
           <div>
             {items.map((item, index) => (
-              <div key={index}>{item}</div>
+              <div key={index} style={{ color: textColor }}>{item}</div>
             ))}
           </div>
         );
@@ -278,73 +303,233 @@ const View_Quotation = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (text) => <>${parseFloat(text).toFixed(2)}</>,
+      render: (text) => <span style={{ color: accentColor, fontWeight: 600 }}>${parseFloat(text).toFixed(2)}</span>,
     },
     {
       title: "Actions",
       key: "actions",
+      align: "right",
       render: (text, record) => (
-        <div>
+        <Space size="small">
           <Tooltip title="Edit">
-            <Button onClick={() => handleEdit(record.id)} icon={<EditOutlined />} />
+            <Button 
+              onClick={() => handleEdit(record.id)} 
+              icon={<EditOutlined />} 
+              style={{
+                background: 'rgba(255, 193, 7, 0.15)',
+                border: `1px solid rgba(255, 193, 7, 0.3)`,
+                color: '#ffc107',
+                borderRadius: 8
+              }}
+            />
           </Tooltip>
           <Tooltip title="Delete">
-            <Button onClick={() => handleDelete(record.id)} icon={<DeleteOutlined />} />
+            <Button 
+              onClick={() => handleDelete(record.id)} 
+              icon={<DeleteOutlined />} 
+              style={{
+                background: 'rgba(255, 77, 79, 0.15)',
+                border: `1px solid rgba(255, 77, 79, 0.3)`,
+                color: '#ff4d4f',
+                borderRadius: 8
+              }}
+            />
           </Tooltip>
           <Tooltip title="Download Quotation PDF">
             <Button
               onClick={() => downloadPDFInvoice(record)}
               icon={<FilePdfOutlined />}
-              style={{ color: "red" }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: `1px solid ${borderColor}`,
+                color: '#ff4d4f',
+                borderRadius: 8
+              }}
             />
           </Tooltip>
           <Tooltip title="Download Excel">
             <Button
               onClick={() => downloadExcelInvoice(record)}
               icon={<FileExcelOutlined />}
-              style={{ color: "green" }}
+              style={{
+                background: 'rgba(0, 184, 148, 0.15)',
+                border: `1px solid rgba(0, 184, 148, 0.3)`,
+                color: '#00b894',
+                borderRadius: 8
+              }}
             />
           </Tooltip>
-        </div>
+        </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ flex: 1, width: "65%", marginLeft: "27%" }}>
-      <div style={{ flex: 1 }}>
-        <h1 style={{color:"white"}}>Quotations</h1>
-        <Search
-          placeholder="Search by username"
-          onChange={(e) => setSearchText(e.target.value)}
-          className={isDarkMode ? "dark-mode-search" : "light-mode-search"}
+    <div style={{
+      minHeight: "100vh",
+      width: "100%",
+      background: bgColor,
+      backgroundImage: "radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.05) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(0, 210, 211, 0.03) 0%, transparent 50%)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "flex-start",
+      padding: "30px",
+      boxSizing: "border-box",
+    }}>
+      <div style={{ 
+        width: "100%", 
+        maxWidth: "1200px",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "calc(100vh - 60px)",
+      }}>
+        
+        {/* ===== HEADER ===== */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center", 
+          marginBottom: "24px",
+          flexWrap: "wrap",
+          gap: 15
+        }}>
+          <div>
+            <Title level={3} style={{ color: textColor, margin: 0 }}>
+              Quotations
+            </Title>
+            <Text style={{ color: secondaryText }}>Manage and export your client quotations.</Text>
+          </div>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />} 
+            href="/CreateQuotation"
+            style={{
+              background: `linear-gradient(135deg, ${accentColor}, #8b7cf7)`,
+              border: "none",
+              boxShadow: `0 4px 15px ${accentColor}44`,
+              borderRadius: 8,
+              height: 40
+            }}
+          >
+            Create New Quotation
+          </Button>
+        </div>
+
+        {/* ===== MAIN PANEL ===== */}
+        <Card
           style={{
-            width: 200,
-            height: 30,
-            fontSize: 15,
-            borderColor: isDarkMode ? "white" : "rgb(22, 22, 22)",
-            marginBottom: 16,
-            backgroundColor: isDarkMode ? "rgb(22, 22, 22)" : "white",
-            color: isDarkMode ? "white" : "black",
+            background: cardBg,
+            border: `1px solid ${borderColor}`,
+            borderRadius: 16,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(108,92,231,0.05)",
+            overflow: "hidden",
+            flex: 1,
           }}
-        />
-        <Button href="/CreateQuotation" style={{ marginLeft: 830 }}>
-          Create New Quotation
-        </Button>
-        <br /><br />
-        <Table
-          dataSource={data}
-          columns={columns}
-          pagination={false}
-          className={isDarkMode ? "dark-mode-table" : "light-mode-table"}
-          headerClassName={
-            isDarkMode
-              ? "dark-mode-table-header"
-              : "light-mode-table-header"
-          }
-        />
-        {/* <AnimatePhoto/> */}
+          bodyStyle={{ padding: "24px" }}
+        >
+          {/* Search & Toolbar */}
+          <div style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
+            <Input
+              placeholder="Search by username..."
+              prefix={<SearchOutlined style={{ color: secondaryText }} />}
+              onChange={(e) => setSearchText(e.target.value)}
+              size="large"
+              style={{
+                width: 300,
+                backgroundColor: inputBg,
+                borderColor: borderColor,
+                color: textColor,
+                borderRadius: 8,
+              }}
+            />
+          </div>
+
+          <Table
+            dataSource={filteredData}
+            columns={columns}
+            pagination={{ pageSize: 10, position: ['bottomCenter'] }}
+            className="dark-table"
+            rowKey="id"
+          />
+        </Card>
+        
+        <div style={{ marginTop: "40px", flexShrink: 0 }}>
+          <AnimatePhoto />
+        </div>
       </div>
+
+           <style>{`
+        /* Table overrides */
+        .dark-table .ant-table {
+          background-color: transparent !important;
+          color: ${textColor} !important;
+        }
+        .dark-table .ant-table-container {
+          border: none !important;
+        }
+        .dark-table .ant-table-thead > tr > th {
+          background-color: ${inputBg} !important;
+          color: ${textColor} !important;
+          font-weight: 600;
+          border-bottom: 1px solid ${borderColor} !important;
+        }
+        .dark-table .ant-table-tbody > tr > td {
+          background-color: transparent !important;
+          color: ${textColor} !important;
+          border-bottom: 1px solid ${borderColor} !important;
+        }
+        .dark-table .ant-table-tbody > tr:hover > td {
+          background-color: rgba(108, 92, 231, 0.08) !important;
+          color: ${textColor} !important;
+        }
+        
+        /* ===== FIX EMPTY STATE (NO DATA) ===== */
+        .dark-table .ant-table-placeholder {
+          background-color: ${inputBg} !important;
+          border: none !important;
+        }
+        .dark-table .ant-empty-description {
+          color: ${textColor} !important;
+        }
+        .dark-table .ant-empty-image svg {
+          fill: ${textColor} !important;
+          opacity: 0.4 !important;
+        }
+        /* ====================================== */
+        
+        .ant-table-thead > tr > th {
+          color: ${textColor} !important;
+        }
+        
+        .ant-input {
+          background-color: ${inputBg} !important;
+          color: ${textColor} !important;
+          border: 1px solid ${borderColor} !important;
+        }
+        .ant-input::placeholder {
+          color: rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .ant-pagination-item a {
+          color: ${textColor} !important;
+        }
+        .ant-pagination-item-active {
+          background-color: ${accentColor} !important;
+          border-color: ${accentColor} !important;
+        }
+        .ant-pagination-item-active a {
+          color: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+          .ant-card {
+            padding: 15px !important;
+          }
+          .ant-input {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

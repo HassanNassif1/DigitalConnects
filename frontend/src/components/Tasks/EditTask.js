@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { Input, Button, notification, Card, Typography, Divider } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { useDarkMode } from '../DarkMode/DarkModeContext'; 
-import AnimatePhoto from "../Images/AnimatePhoto";
-import { PlusOutlined, SaveOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import { Input, Button, notification, Card, Typography, Divider, Spin } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useDarkMode } from '../DarkMode/DarkModeContext';
+import { SaveOutlined, ArrowLeftOutlined, EditOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 
-function CreateTasks() {
+function EditTask() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const { isDarkMode } = useDarkMode();
+    
     const [task, setTask] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); 
+    const [fetchLoading, setFetchLoading] = useState(true);
 
     // === UNIFIED DARK THEME ===
     const bgColor = "#0a0a1a";
@@ -38,46 +41,56 @@ function CreateTasks() {
         color: textColor,
     };
 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        const fetchTask = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/viewtasks`);
+                const foundTask = response.data.find(t => t.id === parseInt(id));
+                if (foundTask) {
+                    setTask(foundTask.text);
+                } else {
+                    notification.error({ message: "Task not found" });
+                }
+            } catch (error) {
+                console.error("Error fetching task:", error);
+                notification.error({ message: "Failed to load task" });
+            } finally {
+                setFetchLoading(false);
+            }
+        };
+        fetchTask();
+    }, [id]);
+
+    const handleUpdate = async (e) => {
         e.preventDefault();
         if (!task.trim()) {
-            notification.error({
-                message: 'Task Required',
-                description: 'Please enter a task before submitting.',
-            });
+            notification.error({ message: 'Task Required', description: 'Please enter a task before submitting.' });
             return;
         }
         
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/CreateTasks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: task }),
-            });
+            const response = await axios.put(`http://localhost:5000/api/updateTask/${id}`, { text: task });
 
-            if (response.ok) {
-                notification.success({
-                    message: 'Task Created',
-                    description: 'Your task has been created successfully!',
-                });
-                setTask('');
-                navigate('/viewtasks'); 
-            } else {
-                notification.error({
-                    message: 'Submission Failed',
-                    description: 'There was an error creating your task.',
-                });
+            if (response.status === 200) {
+                notification.success({ message: 'Task Updated', description: 'Your task has been updated successfully!' });
+                setTimeout(() => navigate('/viewtasks'), 1500);
             }
         } catch (error) {
-            notification.error({
-                message: 'Network Error',
-                description: 'Unable to connect to the server.',
-            });
+            console.error("Error updating task:", error);
+            notification.error({ message: 'Update Failed', description: error.response?.data?.error || 'Could not update the task.' });
         } finally {
             setLoading(false);
         }
     };
+
+    if (fetchLoading) {
+        return (
+            <div style={{ minHeight: "100vh", width: "100%", background: bgColor, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Spin size="large" tip="Loading task..." style={{ color: textColor }} />
+            </div>
+        );
+    }
 
     return (
         <div style={{
@@ -94,12 +107,29 @@ function CreateTasks() {
             <div style={{ width: "100%", maxWidth: "100%", padding: "20px 24px" }}>
                 
                 {/* Header */}
-                <div style={{ marginBottom: "16px" }}>
-                    <Title level={3} style={{ color: textColor, margin: 0 }}>
-                        <PlusOutlined style={{ color: accentColor, marginRight: 10 }} />
-                        Create New Task
-                    </Title>
-                    <Text style={{ color: secondaryText, fontSize: 13 }}>Add a task to your workflow.</Text>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <div>
+                        <Title level={3} style={{ color: textColor, margin: 0 }}>
+                            <EditOutlined style={{ color: accentColor, marginRight: 10 }} />
+                            Edit Task
+                        </Title>
+                        <Text style={{ color: secondaryText, fontSize: 13 }}>Update the description of your task.</Text>
+                    </div>
+                    <Button 
+                        icon={<ArrowLeftOutlined />} 
+                        onClick={() => navigate('/viewtasks')}
+                        style={{ 
+                            background: "transparent", 
+                            border: `1px solid ${borderColor}`, 
+                            color: textColor,
+                            borderRadius: 6,
+                            height: 34,
+                            padding: "0 12px",
+                        }}
+                        size="small"
+                    >
+                        Back
+                    </Button>
                 </div>
 
                 {/* Form Card */}
@@ -124,16 +154,16 @@ function CreateTasks() {
                         top: 0, left: 0, right: 0,
                     }} />
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleUpdate}>
                         <div style={{ marginBottom: 4 }}>
                             <Text style={{ color: textColor, fontWeight: 500, display: "block", marginBottom: 4, fontSize: 13 }}>
-                                Task Description
+                                Update Task Description
                             </Text>
                         </div>
                         <Input 
                             type="text" 
                             name="text" 
-                            placeholder="What needs to be done?"
+                            placeholder="Enter the updated task..."
                             required 
                             value={task}
                             onChange={e => setTask(e.target.value)}
@@ -172,15 +202,11 @@ function CreateTasks() {
                                     height: 38,
                                 }}
                             >
-                                Create Task
+                                Save Changes
                             </Button>
                         </div>
                     </form>
                 </Card>
-                
-                <div style={{ marginTop: "30px" }}>
-                    <AnimatePhoto />
-                </div>
             </div>
 
             <style>{`
@@ -197,4 +223,4 @@ function CreateTasks() {
     );
 }
 
-export default CreateTasks;
+export default EditTask;
